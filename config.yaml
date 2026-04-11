@@ -17,6 +17,13 @@ categories:
       Tecnologia em geral, software, hardware, segurança da informação,
       hacks, vulnerabilidades, infraestrutura, cloud, open source,
       produtos tech, gadgets, empresas de tecnologia.
+    blocked_keywords:
+      - aposta
+      - bet
+      - cassino
+      - jogo de azar
+      - sportingbet
+      - blaze
     feeds:
       - name: Tecmundo
         url: https://rss.tecmundo.com.br/feed
