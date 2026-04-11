@@ -72,11 +72,21 @@ def get_thumbnail(entry):
 def clean_html(text):
     return re.sub(r"<[^>]+>", "", text or "").strip()
 
+def is_blocked(title, summary, blocked_keywords):
+    """Retorna True se o artigo contiver alguma palavra bloqueada."""
+    if not blocked_keywords:
+        return False
+    text = (title + " " + summary).lower()
+    return any(kw.lower() in text for kw in blocked_keywords)
+
 # ── Busca RSS ─────────────────────────────────────────────────────────────────
 
 def fetch_category(category):
     cutoff = cutoff_time()
+    blocked_keywords = category.get("blocked_keywords", [])
     articles = []
+    blocked_count = 0
+
     for feed_cfg in category["feeds"]:
         try:
             parsed = feedparser.parse(feed_cfg["url"])
@@ -84,10 +94,15 @@ def fetch_category(category):
                 pub = parse_entry_date(entry)
                 if pub < cutoff:
                     continue
+                title = entry.get("title", "").strip()
+                summary = clean_html(entry.get("summary", entry.get("description", "")))[:400]
+                if is_blocked(title, summary, blocked_keywords):
+                    blocked_count += 1
+                    continue
                 articles.append({
                     "source": feed_cfg["name"],
-                    "title": entry.get("title", "").strip(),
-                    "summary": clean_html(entry.get("summary", entry.get("description", "")))[:400],
+                    "title": title,
+                    "summary": summary,
                     "link": entry.get("link", ""),
                     "image": get_thumbnail(entry),
                     "published": pub.strftime("%d/%m %H:%M"),
@@ -95,6 +110,9 @@ def fetch_category(category):
                 })
         except Exception as e:
             print(f"  ⚠️  Erro no feed {feed_cfg['name']}: {e}")
+
+    if blocked_count:
+        print(f"   → 🚫 {blocked_count} artigo(s) bloqueado(s) por palavra-chave")
     articles.sort(key=lambda x: x["published_iso"], reverse=True)
     return articles
 
