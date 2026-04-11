@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>feed — seu briefing diário</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & Tokens ─────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0c0c0f;
+  --bg2:       #13131a;
+  --bg3:       #1c1c26;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+  --text:      #e8e8f0;
+  --text2:     #9898b0;
+  --text3:     #5a5a72;
+  --accent:    #7c6af7;
+  --accent2:   #5b4de0;
+  --accent-glow: rgba(124,106,247,0.18);
+  --highlight: #f0e840;
+  --highlight-soft: rgba(240,232,64,0.08);
+  --red:       #f75a5a;
+  --green:     #5af7a0;
+  --radius:    12px;
+  --radius-sm: 8px;
+  --font-display: 'Syne', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+  --transition: 0.2s cubic-bezier(.4,0,.2,1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Noise texture overlay ──────────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+  opacity: .5;
+}
+
+/* ── Header ─────────────────────────────────────────────────── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(12,12,15,0.85);
+  backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+  padding: 0 clamp(1rem, 4vw, 2.5rem);
+}
+
+.header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  gap: 1rem;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.header-meta {
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.total-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text2);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 100px;
+}
+
+/* ── Hero / Summary ─────────────────────────────────────────── */
+.hero {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem) 0;
+}
+
+.summary-card {
+  background: linear-gradient(135deg, var(--bg2) 0%, rgba(124,106,247,0.06) 100%);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: clamp(1.2rem, 3vw, 2rem);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.summary-label {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-label::before {
+  content: '';
+  display: block;
+  width: 20px;
+  height: 1px;
+  background: var(--accent);
+}
+
+.summary-text {
+  font-size: clamp(0.95rem, 2vw, 1.08rem);
+  color: var(--text);
+  font-weight: 300;
+  line-height: 1.75;
+  max-width: 900px;
+}
+
+/* ── Tabs Navigation ────────────────────────────────────────── */
+.tabs-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem) 0;
+  position: relative;
+}
+
+.tabs-nav {
+  display: flex;
+  gap: 0.3rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 0;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+.tabs-nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  font-family: var(--font-body);
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: var(--text3);
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1rem 0.75rem;
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  transition: color var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  letter-spacing: 0.01em;
+}
+
+.tab-btn:hover { color: var(--text2); }
+
+.tab-btn.active {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+.count {
+  font-size: 0.68rem;
+  background: var(--bg3);
+  color: var(--text3);
+  padding: 1px 6px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  font-weight: 400;
+}
+
+.tab-btn.active .count {
+  background: var(--accent-glow);
+  color: var(--accent);
+  border-color: rgba(124,106,247,0.3);
+}
+
+/* ── Tab Panels ─────────────────────────────────────────────── */
+.tabs-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 2.5rem) 4rem;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Section Titles ─────────────────────────────────────────── */
+.section-title {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 2rem 0 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-title small {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  color: var(--text3);
+  text-transform: none;
+}
+
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Cards Grid ─────────────────────────────────────────────── */
+.cards-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.highlights-grid {
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+}
+
+.all-grid {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* ── Card ───────────────────────────────────────────────────── */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--transition), transform var(--transition), box-shadow var(--transition);
+  position: relative;
+}
+
+.card:hover {
+  border-color: var(--border2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+
+.card.highlight {
+  border-color: rgba(124,106,247,0.25);
+  background: linear-gradient(160deg, var(--bg2) 60%, rgba(124,106,247,0.04) 100%);
+}
+
+.card.highlight:hover {
+  border-color: rgba(124,106,247,0.5);
+  box-shadow: 0 8px 30px rgba(124,106,247,0.1);
+}
+
+/* Card Image */
+.card-img {
+  position: relative;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  background: var(--bg3);
+  flex-shrink: 0;
+}
+
+.card-img.empty, .card-img.no-img {
+  aspect-ratio: unset;
+  height: 4px;
+  background: var(--border);
+}
+
+.card.highlight .card-img.empty,
+.card.highlight .card-img.no-img {
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+}
+
+.card-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover .card-img img { transform: scale(1.03); }
+
+.badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(12,12,15,0.9);
+  backdrop-filter: blur(8px);
+  color: var(--accent);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 9px;
+  border-radius: 100px;
+  border: 1px solid rgba(124,106,247,0.3);
+}
+
+/* Card Body */
+.card-body {
+  padding: 1rem 1.1rem 1rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 0.4rem;
+}
+
+.source {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  opacity: 0.8;
+}
+
+.card h3 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+.card h3 a {
+  color: var(--text);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.card h3 a:hover { color: var(--accent); }
+
+.card p {
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.6;
+  font-weight: 300;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+}
+
+time {
+  font-size: 0.72rem;
+  color: var(--text3);
+  font-weight: 300;
+}
+
+.read-more {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: opacity var(--transition);
+  opacity: 0.8;
+}
+
+.read-more:hover { opacity: 1; }
+
+/* ── Empty State ────────────────────────────────────────────── */
+.empty-state {
+  color: var(--text3);
+  font-size: 0.85rem;
+  padding: 2rem 0;
+  text-align: center;
+  width: 100%;
+  grid-column: 1/-1;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 1.5rem clamp(1rem, 4vw, 2.5rem);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-weight: 300;
+}
+
+/* ── Scroll to top ──────────────────────────────────────────── */
+.scroll-top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition), transform var(--transition);
+  z-index: 50;
+}
+
+.scroll-top.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scroll-top:hover { transform: translateY(-3px); }
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .highlights-grid, .all-grid {
+    grid-template-columns: 1fr;
+  }
+  .header-meta { display: none; }
+}
+
+/* ── Entry animation ────────────────────────────────────────── */
+.tab-panel.active .card {
+  animation: fadeUp 0.3s ease both;
+}
+
+.tab-panel.active .card:nth-child(1) { animation-delay: 0ms; }
+.tab-panel.active .card:nth-child(2) { animation-delay: 40ms; }
+.tab-panel.active .card:nth-child(3) { animation-delay: 80ms; }
+.tab-panel.active .card:nth-child(4) { animation-delay: 120ms; }
+.tab-panel.active .card:nth-child(5) { animation-delay: 160ms; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <span class="logo-dot"></span>
+      feed
+    </a>
+    <span class="header-meta">{{GENERATED_AT}}</span>
+    <span class="total-badge">📰 {{TOTAL_ARTICLES}} notícias hoje</span>
+  </div>
+</header>
+
+<!-- Hero Summary -->
+<div class="hero">
+  <div class="summary-card">
+    <p class="summary-label">Resumo do dia</p>
+    <p class="summary-text">{{DAILY_SUMMARY}}</p>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs-wrapper">
+  <nav class="tabs-nav" role="tablist">
+    {{TABS_NAV}}
+  </nav>
+</div>
+
+<!-- Content -->
+<div class="tabs-content">
+  {{TABS_CONTENT}}
+</div>
+
+<!-- Footer -->
+<footer>
+  Gerado automaticamente · <strong>feed</strong> · Últimas 24h
+</footer>
+
+<!-- Scroll to top -->
+<button class="scroll-top" id="scrollTop" aria-label="Voltar ao topo">↑</button>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+    btn.classList.add('active');
+    const panel = document.getElementById('tab-' + target);
+    if (panel) panel.classList.add('active');
+
+    window.scrollTo({ top: document.querySelector('.tabs-wrapper').offsetTop - 70, behavior: 'smooth' });
+  });
+});
+
+// Scroll to top
+const scrollBtn = document.getElementById('scrollTop');
+window.addEventListener('scroll', () => {
+  scrollBtn.classList.toggle('visible', window.scrollY > 400);
+});
+scrollBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+// Keyboard nav para abas
+document.querySelector('.tabs-nav').addEventListener('keydown', e => {
+  const btns = [...document.querySelectorAll('.tab-btn')];
+  const idx = btns.indexOf(document.activeElement);
+  if (e.key === 'ArrowRight' && idx < btns.length - 1) btns[idx+1].focus();
+  if (e.key === 'ArrowLeft' && idx > 0) btns[idx-1].focus();
+});
+</script>
+
+</body>
+</html>

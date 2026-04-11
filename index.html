@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>feed — aguardando primeira geração</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@800&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0c0c0f;
+    color: #e8e8f0;
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+  .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: #7c6af7;
+    box-shadow: 0 0 12px #7c6af7;
+    margin: 0 auto 2rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+  h1 { font-family: 'Syne', sans-serif; font-size: 2rem; letter-spacing: -0.03em; margin-bottom: 0.75rem; }
+  p { color: #9898b0; font-weight: 300; font-size: 1rem; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="dot"></div>
+    <h1>feed</h1>
+    <p>Aguardando primeira geração.<br>Rode o workflow manualmente para começar.</p>
+  </div>
+</body>
+</html>

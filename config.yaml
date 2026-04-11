@@ -1,0 +1,129 @@
+app:
+  title: "feed"
+  subtitle: "seu briefing diário"
+  timezone: "America/Recife"
+  cron_hour: 8
+  highlights_per_category: 5
+
+gemini:
+  model: "gemini-1.5-flash"
+  max_tokens: 2048
+
+categories:
+  - id: tech
+    label: "Tech & TI"
+    emoji: "🖥️"
+    nicho: >
+      Tecnologia em geral, software, hardware, segurança da informação,
+      hacks, vulnerabilidades, infraestrutura, cloud, open source,
+      produtos tech, gadgets, empresas de tecnologia.
+    feeds:
+      - name: Tecmundo
+        url: https://rss.tecmundo.com.br/feed
+      - name: Canaltech
+        url: https://canaltech.com.br/rss/
+      - name: The Verge
+        url: https://www.theverge.com/rss/index.xml
+      - name: Hacker News
+        url: https://hnrss.org/frontpage
+      - name: Wired
+        url: https://www.wired.com/feed/rss
+
+  - id: ia_dev
+    label: "IA & Programação"
+    emoji: "🤖"
+    nicho: >
+      Inteligência artificial, machine learning, LLMs, modelos de linguagem,
+      programação front-end, UX, UI, design de interfaces, JavaScript,
+      CSS, frameworks, ferramentas de desenvolvimento, boas práticas de código,
+      acessibilidade, web design.
+    feeds:
+      - name: Dev.to
+        url: https://dev.to/feed
+      - name: InfoQ
+        url: https://feed.infoq.com
+      - name: CSS-Tricks
+        url: https://css-tricks.com/feed/
+      - name: Smashing Magazine
+        url: https://www.smashingmagazine.com/feed/
+      - name: OpenAI Blog
+        url: https://openai.com/blog/rss.xml
+
+  - id: mundo
+    label: "Geopolítica & Mundo"
+    emoji: "🌍"
+    nicho: >
+      Geopolítica, relações internacionais, economia global, guerras,
+      conflitos, diplomacia, política internacional, organizações mundiais,
+      crises humanitárias, mercados financeiros globais.
+    feeds:
+      - name: BBC Brasil
+        url: https://feeds.bbci.co.uk/portuguese/rss.xml
+      - name: Reuters
+        url: https://feeds.reuters.com/reuters/topNews
+      - name: Al Jazeera
+        url: https://www.aljazeera.com/xml/rss/all.xml
+      - name: The Guardian World
+        url: https://www.theguardian.com/world/rss
+
+  - id: brasil
+    label: "Brasil & Política"
+    emoji: "🇧🇷"
+    nicho: >
+      Política brasileira, governo federal, congresso, STF, economia do Brasil,
+      eleições, partidos políticos, legislação, saúde pública, educação,
+      segurança pública, notícias nacionais em geral.
+    feeds:
+      - name: UOL Notícias
+        url: https://rss.uol.com.br/feed/noticias.xml
+      - name: G1
+        url: https://g1.globo.com/rss/g1/
+      - name: Agência Brasil
+        url: https://agenciabrasil.ebc.com.br/rss/ultimasnoticias/feed.xml
+
+  - id: ceara
+    label: "Ceará & Local"
+    emoji: "📍"
+    nicho: >
+      Ceará, Fortaleza, Maracanaú, nordeste brasileiro, política local,
+      economia do Ceará, cultura cearense, eventos locais, segurança,
+      transporte, infraestrutura local.
+    feeds:
+      - name: Diário do Nordeste
+        url: https://diariodonordeste.verdesmares.com.br/rss.xml
+      - name: O Povo
+        url: https://www.opovo.com.br/rss.xml
+      - name: G1 Ceará
+        url: https://g1.globo.com/rss/g1/ceara/
+
+  - id: entretenimento
+    label: "Entretenimento"
+    emoji: "🎬"
+    nicho: >
+      Filmes, séries, streaming, Netflix, Prime Video, Disney+, HBO Max,
+      animes, mangás, cinema, lançamentos, críticas, trailers, cultura pop,
+      quadrinhos, games, cosplay, eventos de entretenimento.
+    feeds:
+      - name: Omelete
+        url: https://www.omelete.com.br/rss/
+      - name: AdoroCinema
+        url: https://www.adorocinema.com/rss/filmes/
+      - name: IGN Brasil
+        url: https://br.ign.com/feed.xml
+
+  - id: rock_metal
+    label: "Rock & Metal"
+    emoji: "🎸"
+    nicho: >
+      Rock, metal, heavy metal, thrash metal, death metal, punk, alternative,
+      bandas, álbuns, shows, turnês, festivais, lançamentos musicais,
+      entrevistas com artistas, notícias da cena musical.
+    feeds:
+      - name: Whiplash
+        url: https://whiplash.net/rss.xml
+      - name: Loudwire
+        url: https://loudwire.com/feed/
+      - name: Ultimate Guitar
+        url: https://www.ultimate-guitar.com/news/rss
+      - name: Metal Hammer
+        url: https://www.loudersound.com/metal-hammer/rss
