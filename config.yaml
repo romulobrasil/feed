@@ -1,13 +1,13 @@
 app:
   title: "feed"
   subtitle: "seu briefing diário"
-  timezone: "America/Recife"
+  timezone: "America/Fortaleza"
   cron_hour: 8
   highlights_per_category: 5
   github_user: "romulobrasil"
   github_repo: "feed"
   # Gere o hash em: https://emn178.github.io/online-tools/sha256.html
-  update_password_hash: "d54a95b07e62d57de58bfbc5b8630e20232e79169550babeefdb1ee3655c5e97"
+  update_password_hash: "3c4dfb76c70336485a4b27499f395e3bd9b0955b2c18a45e2e3baca127dfddf8"
 
 gemini:
   model: "gemini-1.5-flash"
