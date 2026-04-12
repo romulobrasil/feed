@@ -7,7 +7,7 @@ app:
   github_user: "romulobrasil"
   github_repo: "feed"
   # Gere o hash em: https://emn178.github.io/online-tools/sha256.html
-  update_password_hash: "COLOQUE_AQUI_O_SHA256_DA_SUA_SENHA"
+  update_password_hash: "d54a95b07e62d57de58bfbc5b8630e20232e79169550babeefdb1ee3655c5e97"
 
 gemini:
   model: "gemini-1.5-flash"
