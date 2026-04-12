@@ -137,13 +137,19 @@ def flatten_articles(articles_by_source):
 
 # ── Gemini ────────────────────────────────────────────────────────────────────
 
-def call_gemini(prompt):
+def call_gemini(prompt, json_mode=False):
     if not GEMINI_API_KEY:
         return None
+    generation_config = {
+        "temperature": 0.4,
+        "maxOutputTokens": CONFIG["gemini"]["max_tokens"],
+    }
+    if json_mode:
+        generation_config["responseMimeType"] = "application/json"
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {"temperature": 0.4, "maxOutputTokens": CONFIG["gemini"]["max_tokens"]},
+        "generationConfig": generation_config,
     }
     try:
         r = requests.post(url, json=body, timeout=30)
@@ -169,7 +175,8 @@ def translate_articles(articles_by_source):
         return articles_by_source
 
     print(f"   → 🌐 Traduzindo {len(to_translate)} artigos...")
-    batch_size = 20
+    batch_size = 10
+    translated_count = 0
 
     for start in range(0, len(to_translate), batch_size):
         batch = to_translate[start:start + batch_size]
@@ -187,20 +194,32 @@ Um objeto por item, na mesma ordem.
 Itens:
 {items}"""
 
-        resp = call_gemini(prompt)
+        resp = call_gemini(prompt, json_mode=True)
         if not resp:
             continue
 
         try:
             clean = re.sub(r"```(?:json)?|```", "", resp).strip()
-            translated = json.loads(clean)
+            try:
+                translated = json.loads(clean)
+            except Exception:
+                match = re.search(r"\[[\s\S]*\]", clean)
+                if not match:
+                    raise
+                translated = json.loads(match.group(0))
             for i, art in enumerate(batch):
                 if i < len(translated):
                     t = translated[i]
-                    if t.get("t"): art["title"] = t["t"]
-                    if t.get("d"): art["summary"] = t["d"]
+                    title = t.get("t") or t.get("title") or t.get("titulo")
+                    summary = t.get("d") or t.get("description") or t.get("descricao") or t.get("summary")
+                    if title:
+                        art["title"] = str(title).strip()
+                        translated_count += 1
+                    if summary:
+                        art["summary"] = str(summary).strip()
         except Exception as e:
             print(f"   ⚠️  Erro ao parsear tradução: {e}")
+    print(f"   → ✅ Traduções aplicadas: {translated_count}")
 
     return articles_by_source
 
