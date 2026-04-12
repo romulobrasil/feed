@@ -154,33 +154,32 @@ def call_gemini(prompt):
         return None
 
 def translate_articles(articles_by_source):
-    """Traduz títulos e descrições em inglês para português via Gemini."""
+    """Traduz títulos e descrições para português via Gemini."""
     if not GEMINI_API_KEY:
         return articles_by_source
 
-    # Coleta artigos que precisam de tradução
-    to_translate = []
-    for source_name, arts in articles_by_source.items():
-        for art in arts:
-            text = art["title"] + " " + art["summary"]
-            non_ascii = sum(1 for c in text if ord(c) > 127)
-            ratio = non_ascii / max(len(text), 1)
-            # Se menos de 3% de caracteres especiais, provavelmente é inglês
-            if ratio < 0.03 and len(art["title"]) > 10:
-                to_translate.append(art)
+    to_translate = [
+        art
+        for arts in articles_by_source.values()
+        for art in arts
+        if art.get("title") or art.get("summary")
+    ]
 
     if not to_translate:
         return articles_by_source
 
-    print(f"   → 🌐 Traduzindo {len(to_translate)} artigos em inglês...")
+    print(f"   → 🌐 Traduzindo {len(to_translate)} artigos...")
+    batch_size = 20
 
-    # Monta payload de tradução em lote
-    items = "\n".join(
-        f"{i+1}. TITULO: {a['title']} | DESC: {a['summary'][:200]}"
-        for i, a in enumerate(to_translate)
-    )
+    for start in range(0, len(to_translate), batch_size):
+        batch = to_translate[start:start + batch_size]
+        items = "\n".join(
+            f"{i+1}. TITULO: {a['title']} | DESC: {a['summary'][:200]}"
+            for i, a in enumerate(batch)
+        )
 
-    prompt = f"""Traduza os títulos e descrições abaixo do inglês para o português brasileiro.
+        prompt = f"""Traduza os títulos e descrições abaixo para português brasileiro.
+Se já estiverem em português, mantenha o sentido e a naturalidade.
 Mantenha o tom jornalístico. Responda SOMENTE com JSON array no formato:
 [{{"t": "titulo traduzido", "d": "descricao traduzida"}}, ...]
 Um objeto por item, na mesma ordem.
@@ -188,20 +187,20 @@ Um objeto por item, na mesma ordem.
 Itens:
 {items}"""
 
-    resp = call_gemini(prompt)
-    if not resp:
-        return articles_by_source
+        resp = call_gemini(prompt)
+        if not resp:
+            continue
 
-    try:
-        clean = re.sub(r"```(?:json)?|```", "", resp).strip()
-        translated = json.loads(clean)
-        for i, art in enumerate(to_translate):
-            if i < len(translated):
-                t = translated[i]
-                if t.get("t"): art["title"]   = t["t"]
-                if t.get("d"): art["summary"] = t["d"]
-    except Exception as e:
-        print(f"   ⚠️  Erro ao parsear tradução: {e}")
+        try:
+            clean = re.sub(r"```(?:json)?|```", "", resp).strip()
+            translated = json.loads(clean)
+            for i, art in enumerate(batch):
+                if i < len(translated):
+                    t = translated[i]
+                    if t.get("t"): art["title"] = t["t"]
+                    if t.get("d"): art["summary"] = t["d"]
+        except Exception as e:
+            print(f"   ⚠️  Erro ao parsear tradução: {e}")
 
     return articles_by_source
 
