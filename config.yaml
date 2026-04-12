@@ -4,6 +4,10 @@ app:
   timezone: "America/Recife"
   cron_hour: 8
   highlights_per_category: 5
+  github_user: "romulobrasil"
+  github_repo: "feed"
+  # Gere o hash em: https://emn178.github.io/online-tools/sha256.html
+  update_password_hash: "COLOQUE_AQUI_O_SHA256_DA_SUA_SENHA"
 
 gemini:
   model: "gemini-1.5-flash"
@@ -19,11 +23,15 @@ categories:
       produtos tech, gadgets, empresas de tecnologia.
     blocked_keywords:
       - aposta
+      - apostas
       - bet
+      - bets
       - cassino
       - jogo de azar
       - sportingbet
       - blaze
+      - betano
+      - stake
     feeds:
       - name: Tecmundo
         url: https://rss.tecmundo.com.br/feed
