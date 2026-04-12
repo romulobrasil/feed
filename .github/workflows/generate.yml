@@ -1,7 +1,7 @@
 name: Generate Daily Feed
 
 on:
-  workflow_dispatch:  # permite rodar manualmente pelo GitHub
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -11,19 +11,28 @@ permissions:
 jobs:
   generate:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
     
     steps:
       - name: Checkout repositório
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Configurar Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.11'
           cache: 'pip'
 
       - name: Instalar dependências
         run: pip install -r requirements.txt
+
+      - name: Validar segredo GEMINI_API_KEY
+        run: |
+          if [ -z "${{ secrets.GEMINI_API_KEY }}" ]; then
+            echo "GEMINI_API_KEY não configurada nos secrets do repositório."
+            exit 1
+          fi
 
       - name: Gerar feed
         env:
