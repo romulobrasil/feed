@@ -2,11 +2,12 @@ app:
   title: "feed"
   subtitle: "seu briefing diário"
   timezone: "America/Fortaleza"
+  cron_hour: 8
   highlights_per_category: 5
   github_user: "romulobrasil"
   github_repo: "feed"
   # Gere o hash em: https://emn178.github.io/online-tools/sha256.html
-  update_password_hash: "3c4dfb76c70336485a4b27499f395e3bd9b0955b2c18a45e2e3baca127dfddf8"
+  update_password_hash: "COLOQUE_AQUI_O_SHA256_DA_SUA_SENHA"
 
 gemini:
   model: "gemini-1.5-flash"
@@ -23,6 +24,8 @@ categories:
     blocked_keywords:
       - aposta
       - apostas
+      - palpite
+      - palpites
       - bet
       - bets
       - cassino
@@ -31,6 +34,11 @@ categories:
       - blaze
       - betano
       - stake
+      - odds
+      - prognóstico
+      - esporte
+      - futebol
+      - campeonato
     feeds:
       - name: Tecmundo
         url: https://rss.tecmundo.com.br/feed
@@ -103,12 +111,14 @@ categories:
       economia do Ceará, cultura cearense, eventos locais, segurança,
       transporte, infraestrutura local.
     feeds:
+      - name: G1 Ceará
+        url: https://g1.globo.com/rss/g1/ceara/
       - name: Diário do Nordeste
         url: https://diariodonordeste.verdesmares.com.br/rss.xml
       - name: O Povo
         url: https://www.opovo.com.br/rss.xml
-      - name: G1 Ceará
-        url: https://g1.globo.com/rss/g1/ceara/
+      - name: Verdesmares
+        url: https://verdesmares.com.br/rss.xml
 
   - id: entretenimento
     label: "Entretenimento"

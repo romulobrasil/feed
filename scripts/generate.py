@@ -85,6 +85,10 @@ def esc(text):
 
 # ── Busca RSS ─────────────────────────────────────────────────────────────────
 
+FEEDPARSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+}
+
 def fetch_category(category):
     cutoff = cutoff_time()
     blocked_keywords = category.get("blocked_keywords", [])
@@ -95,7 +99,7 @@ def fetch_category(category):
         source_name = feed_cfg["name"]
         articles_by_source[source_name] = []
         try:
-            parsed = feedparser.parse(feed_cfg["url"])
+            parsed = feedparser.parse(feed_cfg["url"], request_headers=FEEDPARSER_HEADERS)
             for entry in parsed.entries:
                 pub = parse_entry_date(entry)
                 if pub < cutoff:
@@ -148,6 +152,60 @@ def call_gemini(prompt):
     except Exception as e:
         print(f"  ⚠️  Gemini error: {e}")
         return None
+
+def translate_articles(articles_by_source):
+    """Traduz títulos e descrições em inglês para português via Gemini."""
+    if not GEMINI_API_KEY:
+        return articles_by_source
+
+    # Coleta artigos que precisam de tradução
+    to_translate = []
+    for source_name, arts in articles_by_source.items():
+        for art in arts:
+            text = art["title"] + " " + art["summary"]
+            non_ascii = sum(1 for c in text if ord(c) > 127)
+            ratio = non_ascii / max(len(text), 1)
+            # Se menos de 3% de caracteres especiais, provavelmente é inglês
+            if ratio < 0.03 and len(art["title"]) > 10:
+                to_translate.append(art)
+
+    if not to_translate:
+        return articles_by_source
+
+    print(f"   → 🌐 Traduzindo {len(to_translate)} artigos em inglês...")
+
+    # Monta payload de tradução em lote
+    items = "
+".join(
+        f"{i+1}. TITULO: {a['title']} | DESC: {a['summary'][:200]}"
+        for i, a in enumerate(to_translate)
+    )
+
+    prompt = f"""Traduza os títulos e descrições abaixo do inglês para o português brasileiro.
+Mantenha o tom jornalístico. Responda SOMENTE com JSON array no formato:
+[{{"t": "titulo traduzido", "d": "descricao traduzida"}}, ...]
+Um objeto por item, na mesma ordem.
+
+Itens:
+{items}"""
+
+    resp = call_gemini(prompt)
+    if not resp:
+        return articles_by_source
+
+    try:
+        clean = re.sub(r"")
+        translated = json.loads(clean)
+        for i, art in enumerate(to_translate):
+            if i < len(translated):
+                t = translated[i]
+                if t.get("t"): art["title"]   = t["t"]
+                if t.get("d"): art["summary"] = t["d"]
+    except Exception as e:
+        print(f"   ⚠️  Erro ao parsear tradução: {e}")
+
+    return articles_by_source
+
 
 def highlight_articles(all_articles, category):
     if not all_articles or not GEMINI_API_KEY:
@@ -210,9 +268,18 @@ def build_card(art):
 </a>"""
 
 def build_news_item(art):
+    time_str = art["published"].split()[1] if " " in art["published"] else art["published"]
+    img_html = ""
+    if art.get("image"):
+        img_html = f'''<div class="ni-img"><img src="{esc(art["image"])}" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>'''
+    desc_html = f'<p class="ni-desc">{esc(art["summary"][:180])}{… if len(art[summary]) > 180 else }</p>' if art.get("summary") else ""
     return f"""<a class="news-item" href="{esc(art['link'])}" target="_blank" rel="noopener">
-  <span class="news-time">{esc(art['published'].split()[1] if ' ' in art['published'] else art['published'])}</span>
-  <span class="news-title">{esc(art['title'])}</span>
+  {img_html}
+  <div class="ni-body">
+    <span class="ni-time">{esc(time_str)}</span>
+    <span class="ni-title">{esc(art['title'])}</span>
+    {desc_html}
+  </div>
   <span class="news-arrow">→</span>
 </a>"""
 
@@ -327,6 +394,7 @@ def main():
     for cat in CONFIG["categories"]:
         print(f"📡 {cat['label']}...")
         articles_by_source = fetch_category(cat)
+        articles_by_source = translate_articles(articles_by_source)
         all_articles       = flatten_articles(articles_by_source)
         total              = len(all_articles)
         print(f"   → {total} artigos")
