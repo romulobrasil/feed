@@ -175,8 +175,7 @@ def translate_articles(articles_by_source):
     print(f"   → 🌐 Traduzindo {len(to_translate)} artigos em inglês...")
 
     # Monta payload de tradução em lote
-    items = "
-".join(
+    items = "\n".join(
         f"{i+1}. TITULO: {a['title']} | DESC: {a['summary'][:200]}"
         for i, a in enumerate(to_translate)
     )
@@ -194,7 +193,7 @@ Itens:
         return articles_by_source
 
     try:
-        clean = re.sub(r"")
+        clean = re.sub(r"```(?:json)?|```", "", resp).strip()
         translated = json.loads(clean)
         for i, art in enumerate(to_translate):
             if i < len(translated):
@@ -272,7 +271,7 @@ def build_news_item(art):
     img_html = ""
     if art.get("image"):
         img_html = f'''<div class="ni-img"><img src="{esc(art["image"])}" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>'''
-    desc_html = f'<p class="ni-desc">{esc(art["summary"][:180])}{… if len(art[summary]) > 180 else }</p>' if art.get("summary") else ""
+    desc_html = f'<p class="ni-desc">{esc(art["summary"][:180])}{"…" if len(art["summary"]) > 180 else ""}</p>' if art.get("summary") else ""
     return f"""<a class="news-item" href="{esc(art['link'])}" target="_blank" rel="noopener">
   {img_html}
   <div class="ni-body">

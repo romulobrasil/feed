@@ -112,7 +112,7 @@ categories:
       transporte, infraestrutura local.
     feeds:
       - name: G1 Ceará
-        url: https://g1.globo.com/rss/g1/ceara/
+        url: https://g1.globo.com/rss/g1/ce/
       - name: Diário do Nordeste
         url: https://diariodonordeste.verdesmares.com.br/rss.xml
       - name: O Povo
