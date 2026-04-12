@@ -2,7 +2,6 @@ app:
   title: "feed"
   subtitle: "seu briefing diário"
   timezone: "America/Fortaleza"
-  cron_hour: 8
   highlights_per_category: 5
   github_user: "romulobrasil"
   github_repo: "feed"
