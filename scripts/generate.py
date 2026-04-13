@@ -15,6 +15,7 @@ from zoneinfo import ZoneInfo
 from pathlib import Path
 import time
 import re
+import xml.etree.ElementTree as ET
 
 # ── Configuração ──────────────────────────────────────────────────────────────
 
@@ -73,6 +74,20 @@ def get_thumbnail(entry):
 def clean_html(text):
     return re.sub(r"<[^>]+>", "", text or "").strip()
 
+def parse_datetime(value):
+    if not value:
+        return None
+    text = str(value).strip()
+    try:
+        if text.endswith("Z"):
+            text = text[:-1] + "+00:00"
+        dt = datetime.fromisoformat(text)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(TZ)
+    except Exception:
+        return None
+
 def is_blocked(title, summary, blocked_keywords):
     if not blocked_keywords:
         return False
@@ -99,6 +114,41 @@ def fetch_category(category):
         source_name = feed_cfg["name"]
         articles_by_source[source_name] = []
         try:
+            if "sitemap" in feed_cfg["url"]:
+                xml_text = requests.get(feed_cfg["url"], headers=FEEDPARSER_HEADERS, timeout=30).text
+                root = ET.fromstring(xml_text)
+                ns = {
+                    "sm": "http://www.sitemaps.org/schemas/sitemap/0.9",
+                    "news": "http://www.google.com/schemas/sitemap-news/0.9",
+                    "image": "http://www.google.com/schemas/sitemap-image/1.1",
+                }
+                for node in root.findall("sm:url", ns):
+                    link = (node.findtext("sm:loc", default="", namespaces=ns) or "").strip()
+                    title = (node.findtext("news:news/news:title", default="", namespaces=ns) or "").strip()
+                    summary = ""
+                    pub_raw = (
+                        node.findtext("news:news/news:publication_date", default="", namespaces=ns)
+                        or node.findtext("sm:lastmod", default="", namespaces=ns)
+                    )
+                    pub = parse_datetime(pub_raw) or (now_local() - timedelta(hours=1))
+                    if pub < cutoff:
+                        continue
+                    image = (node.findtext("image:image/image:loc", default="", namespaces=ns) or "").strip()
+                    if is_blocked(title, summary, blocked_keywords):
+                        blocked_count += 1
+                        continue
+                    articles_by_source[source_name].append({
+                        "source": source_name,
+                        "title": title or link,
+                        "summary": summary,
+                        "link": link,
+                        "image": image,
+                        "published": pub.strftime("%d/%m %H:%M"),
+                        "published_iso": pub.isoformat(),
+                    })
+                articles_by_source[source_name].sort(key=lambda x: x["published_iso"], reverse=True)
+                continue
+
             parsed = feedparser.parse(feed_cfg["url"], request_headers=FEEDPARSER_HEADERS)
             for entry in parsed.entries:
                 pub = parse_entry_date(entry)

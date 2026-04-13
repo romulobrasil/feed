@@ -115,11 +115,6 @@ categories:
         url: https://g1.globo.com/rss/g1/ce/
       - name: Diário do Nordeste
         url: https://diariodonordeste.verdesmares.com.br/cmlink/feed-ultima-hora-7.4842206
-      - name: O Povo
-        url: https://www.opovo.com.br/rss.xml
-      - name: Verdesmares
-        url: https://verdesmares.com.br/rss.xml
-
   - id: entretenimento
     label: "Entretenimento"
     emoji: "🎬"
@@ -129,9 +124,7 @@ categories:
       quadrinhos, games, cosplay, eventos de entretenimento.
     feeds:
       - name: Omelete
-        url: https://www.omelete.com.br/rss/
-      - name: AdoroCinema
-        url: https://www.adorocinema.com/rss/filmes/
+        url: https://www.omelete.com.br/sitemap-news.xml
       - name: IGN Brasil
         url: https://br.ign.com/feed.xml
 
@@ -144,10 +137,8 @@ categories:
       entrevistas com artistas, notícias da cena musical.
     feeds:
       - name: Whiplash
-        url: https://whiplash.net/rss.xml
+        url: https://whiplash.net/sitemap_ultimas.xml
       - name: Loudwire
         url: https://loudwire.com/feed/
-      - name: Ultimate Guitar
-        url: https://www.ultimate-guitar.com/news/rss
       - name: Metal Hammer
-        url: https://www.loudersound.com/metal-hammer/rss
+        url: https://www.loudersound.com/sitemap-news.xml
