@@ -28,6 +28,7 @@ with open(CONFIG_PATH, "r", encoding="utf-8") as f:
     CONFIG = yaml.safe_load(f)
 
 GEMINI_API_KEY   = os.environ.get("GEMINI_API_KEY", "")
+GEMINI_ENABLED   = bool(CONFIG.get("gemini", {}).get("enabled", False))
 GEMINI_MODEL     = CONFIG["gemini"]["model"]
 GEMINI_MODEL_CANDIDATES = [m for m in [
     GEMINI_MODEL,
@@ -35,6 +36,7 @@ GEMINI_MODEL_CANDIDATES = [m for m in [
     "gemini-1.5-flash",
     "gemini-1.5-flash-latest",
 ] if m]
+GEMINI_RATE_LIMITED_UNTIL = 0.0
 TZ               = ZoneInfo(CONFIG["app"]["timezone"])
 HIGHLIGHTS_COUNT = CONFIG["app"]["highlights_per_category"]
 HOURS_BACK       = 24
@@ -103,6 +105,20 @@ def is_blocked(title, summary, blocked_keywords):
 def esc(text):
     """Escapa caracteres HTML básicos."""
     return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+def looks_portuguese(text):
+    """Heurística leve para reduzir chamadas de tradução."""
+    if not text:
+        return False
+    lower = text.lower()
+    pt_hints = [
+        " que ", " para ", " com ", " uma ", " um ", " não ", " dos ", " das ",
+        " de ", " em ", " no ", " na ", " ao ", " aos ", " às ", " por ",
+    ]
+    score = sum(1 for hint in pt_hints if hint in f" {lower} ")
+    if re.search(r"[ãõáéíóúâêôç]", lower):
+        score += 1
+    return score >= 3
 
 # ── Busca RSS ─────────────────────────────────────────────────────────────────
 
@@ -194,7 +210,15 @@ def flatten_articles(articles_by_source):
 # ── Gemini ────────────────────────────────────────────────────────────────────
 
 def call_gemini(prompt, json_mode=False):
+    global GEMINI_RATE_LIMITED_UNTIL
+    if not GEMINI_ENABLED:
+        return None
     if not GEMINI_API_KEY:
+        return None
+    now_ts = time.time()
+    if now_ts < GEMINI_RATE_LIMITED_UNTIL:
+        remaining = int(GEMINI_RATE_LIMITED_UNTIL - now_ts)
+        print(f"  ⚠️  Gemini em cooldown de rate limit ({remaining}s).")
         return None
     generation_config = {
         "temperature": 0.4,
@@ -208,47 +232,67 @@ def call_gemini(prompt, json_mode=False):
     }
     for model in GEMINI_MODEL_CANDIDATES:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
-        try:
-            r = requests.post(url, json=body, timeout=30)
-            if r.status_code == 404:
-                print(f"  ⚠️  Modelo Gemini indisponível: {model}")
-                continue
-            r.raise_for_status()
-            data = r.json()
-            candidates = data.get("candidates") or []
-            if not candidates:
-                print(f"  ⚠️  Gemini sem candidates. model={model} promptFeedback={data.get('promptFeedback')}")
+        for attempt in range(3):
+            try:
+                r = requests.post(url, json=body, timeout=30)
+                if r.status_code == 404:
+                    print(f"  ⚠️  Modelo Gemini indisponível: {model}")
+                    break
+                if r.status_code == 429:
+                    retry_after = r.headers.get("Retry-After")
+                    wait_s = int(retry_after) if retry_after and retry_after.isdigit() else min(5 * (attempt + 1), 20)
+                    if attempt < 2:
+                        print(f"  ⚠️  Rate limit no {model}, aguardando {wait_s}s (tentativa {attempt+1}/3)...")
+                        time.sleep(wait_s)
+                        continue
+                    GEMINI_RATE_LIMITED_UNTIL = time.time() + max(wait_s, 60)
+                    print(f"  ⚠️  Gemini error ({model}): 429 Too Many Requests. Cooldown ativado.")
+                    return None
+                r.raise_for_status()
+                data = r.json()
+                candidates = data.get("candidates") or []
+                if not candidates:
+                    print(f"  ⚠️  Gemini sem candidates. model={model} promptFeedback={data.get('promptFeedback')}")
+                    return None
+                parts = candidates[0].get("content", {}).get("parts", [])
+                text_parts = [p.get("text", "") for p in parts if p.get("text")]
+                if not text_parts:
+                    print(f"  ⚠️  Gemini sem texto útil. model={model} finishReason={candidates[0].get('finishReason')}")
+                    return None
+                return "\n".join(text_parts).strip()
+            except Exception as e:
+                print(f"  ⚠️  Gemini error ({model}): {e}")
                 return None
-            parts = candidates[0].get("content", {}).get("parts", [])
-            text_parts = [p.get("text", "") for p in parts if p.get("text")]
-            if not text_parts:
-                print(f"  ⚠️  Gemini sem texto útil. model={model} finishReason={candidates[0].get('finishReason')}")
-                return None
-            return "\n".join(text_parts).strip()
-        except Exception as e:
-            print(f"  ⚠️  Gemini error ({model}): {e}")
-            return None
     print("  ⚠️  Nenhum modelo Gemini disponível para esta chave/API.")
     return None
 
 def translate_articles(articles_by_source):
     """Traduz títulos e descrições para português via Gemini."""
+    if not GEMINI_ENABLED:
+        print("   → ℹ️  IA desativada no config (gemini.enabled=false).")
+        return articles_by_source
     if not GEMINI_API_KEY:
         print("   → ℹ️  GEMINI_API_KEY ausente. Tradução desativada.")
         return articles_by_source
 
-    to_translate = [
+    candidates = [
         art
         for arts in articles_by_source.values()
         for art in arts
         if art.get("title") or art.get("summary")
     ]
 
+    to_translate = [
+        art for art in candidates
+        if not looks_portuguese(f"{art.get('title', '')} {art.get('summary', '')}")
+    ]
+
     if not to_translate:
+        print("   → ℹ️  Sem artigos elegíveis para tradução.")
         return articles_by_source
 
-    print(f"   → 🌐 Traduzindo {len(to_translate)} artigos...")
-    batch_size = 10
+    print(f"   → 🌐 Traduzindo {len(to_translate)} de {len(candidates)} artigos...")
+    batch_size = 20
     translated_titles = 0
     translated_summaries = 0
 
@@ -300,7 +344,7 @@ Itens:
 
 
 def highlight_articles(all_articles, category):
-    if not all_articles or not GEMINI_API_KEY:
+    if not all_articles or not GEMINI_ENABLED or not GEMINI_API_KEY:
         return set(a["title"] for a in all_articles[:HIGHLIGHTS_COUNT])
 
     titles_list = "\n".join(
@@ -324,6 +368,8 @@ Manchetes:
         return set(a["title"] for a in all_articles[:HIGHLIGHTS_COUNT])
 
 def generate_daily_summary(all_highlights):
+    if not GEMINI_ENABLED:
+        return "Resumo do dia sem IA (modo gratuito)."
     if not GEMINI_API_KEY:
         return "Resumo do dia indisponível — configure a GEMINI_API_KEY."
     bullets = "\n".join(f"- {h}" for h in all_highlights[:30])
