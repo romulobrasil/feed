@@ -154,7 +154,17 @@ def call_gemini(prompt, json_mode=False):
     try:
         r = requests.post(url, json=body, timeout=30)
         r.raise_for_status()
-        return r.json()["candidates"][0]["content"]["parts"][0]["text"].strip()
+        data = r.json()
+        candidates = data.get("candidates") or []
+        if not candidates:
+            print(f"  ⚠️  Gemini sem candidates. promptFeedback={data.get('promptFeedback')}")
+            return None
+        parts = candidates[0].get("content", {}).get("parts", [])
+        text_parts = [p.get("text", "") for p in parts if p.get("text")]
+        if not text_parts:
+            print(f"  ⚠️  Gemini sem texto útil. finishReason={candidates[0].get('finishReason')}")
+            return None
+        return "\n".join(text_parts).strip()
     except Exception as e:
         print(f"  ⚠️  Gemini error: {e}")
         return None
@@ -162,6 +172,7 @@ def call_gemini(prompt, json_mode=False):
 def translate_articles(articles_by_source):
     """Traduz títulos e descrições para português via Gemini."""
     if not GEMINI_API_KEY:
+        print("   → ℹ️  GEMINI_API_KEY ausente. Tradução desativada.")
         return articles_by_source
 
     to_translate = [
@@ -176,7 +187,8 @@ def translate_articles(articles_by_source):
 
     print(f"   → 🌐 Traduzindo {len(to_translate)} artigos...")
     batch_size = 10
-    translated_count = 0
+    translated_titles = 0
+    translated_summaries = 0
 
     for start in range(0, len(to_translate), batch_size):
         batch = to_translate[start:start + batch_size]
@@ -214,12 +226,13 @@ Itens:
                     summary = t.get("d") or t.get("description") or t.get("descricao") or t.get("summary")
                     if title:
                         art["title"] = str(title).strip()
-                        translated_count += 1
+                        translated_titles += 1
                     if summary:
                         art["summary"] = str(summary).strip()
+                        translated_summaries += 1
         except Exception as e:
             print(f"   ⚠️  Erro ao parsear tradução: {e}")
-    print(f"   → ✅ Traduções aplicadas: {translated_count}")
+    print(f"   → ✅ Traduções aplicadas: títulos={translated_titles}, descrições={translated_summaries}")
 
     return articles_by_source
 
@@ -285,7 +298,13 @@ def build_card(art):
 </a>"""
 
 def build_news_item(art):
-    time_str = art["published"].split()[1] if " " in art["published"] else art["published"]
+    date_time_str = art.get("published", "")
+    if art.get("published_iso"):
+        try:
+            dt = datetime.fromisoformat(art["published_iso"]).astimezone(TZ)
+            date_time_str = dt.strftime("%d/%m/%Y • %H:%M")
+        except Exception:
+            pass
     img_html = ""
     if art.get("image"):
         img_html = f'''<div class="ni-img"><img src="{esc(art["image"])}" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>'''
@@ -293,7 +312,7 @@ def build_news_item(art):
     return f"""<a class="news-item" href="{esc(art['link'])}" target="_blank" rel="noopener">
   {img_html}
   <div class="ni-body">
-    <span class="ni-time">{esc(time_str)}</span>
+    <span class="ni-time">{esc(date_time_str)}</span>
     <span class="ni-title">{esc(art['title'])}</span>
     {desc_html}
   </div>
