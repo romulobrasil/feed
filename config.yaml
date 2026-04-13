@@ -10,7 +10,7 @@ app:
   update_password_hash: "3c4dfb76c70336485a4b27499f395e3bd9b0955b2c18a45e2e3baca127dfddf8"
 
 gemini:
-  model: "gemini-1.5-flash"
+  model: "gemini-2.0-flash"
   max_tokens: 2048
 
 categories:

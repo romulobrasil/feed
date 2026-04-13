@@ -29,6 +29,12 @@ with open(CONFIG_PATH, "r", encoding="utf-8") as f:
 
 GEMINI_API_KEY   = os.environ.get("GEMINI_API_KEY", "")
 GEMINI_MODEL     = CONFIG["gemini"]["model"]
+GEMINI_MODEL_CANDIDATES = [m for m in [
+    GEMINI_MODEL,
+    "gemini-2.0-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-latest",
+] if m]
 TZ               = ZoneInfo(CONFIG["app"]["timezone"])
 HIGHLIGHTS_COUNT = CONFIG["app"]["highlights_per_category"]
 HOURS_BACK       = 24
@@ -196,28 +202,34 @@ def call_gemini(prompt, json_mode=False):
     }
     if json_mode:
         generation_config["responseMimeType"] = "application/json"
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
     body = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": generation_config,
     }
-    try:
-        r = requests.post(url, json=body, timeout=30)
-        r.raise_for_status()
-        data = r.json()
-        candidates = data.get("candidates") or []
-        if not candidates:
-            print(f"  ⚠️  Gemini sem candidates. promptFeedback={data.get('promptFeedback')}")
+    for model in GEMINI_MODEL_CANDIDATES:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_API_KEY}"
+        try:
+            r = requests.post(url, json=body, timeout=30)
+            if r.status_code == 404:
+                print(f"  ⚠️  Modelo Gemini indisponível: {model}")
+                continue
+            r.raise_for_status()
+            data = r.json()
+            candidates = data.get("candidates") or []
+            if not candidates:
+                print(f"  ⚠️  Gemini sem candidates. model={model} promptFeedback={data.get('promptFeedback')}")
+                return None
+            parts = candidates[0].get("content", {}).get("parts", [])
+            text_parts = [p.get("text", "") for p in parts if p.get("text")]
+            if not text_parts:
+                print(f"  ⚠️  Gemini sem texto útil. model={model} finishReason={candidates[0].get('finishReason')}")
+                return None
+            return "\n".join(text_parts).strip()
+        except Exception as e:
+            print(f"  ⚠️  Gemini error ({model}): {e}")
             return None
-        parts = candidates[0].get("content", {}).get("parts", [])
-        text_parts = [p.get("text", "") for p in parts if p.get("text")]
-        if not text_parts:
-            print(f"  ⚠️  Gemini sem texto útil. finishReason={candidates[0].get('finishReason')}")
-            return None
-        return "\n".join(text_parts).strip()
-    except Exception as e:
-        print(f"  ⚠️  Gemini error: {e}")
-        return None
+    print("  ⚠️  Nenhum modelo Gemini disponível para esta chave/API.")
+    return None
 
 def translate_articles(articles_by_source):
     """Traduz títulos e descrições para português via Gemini."""
