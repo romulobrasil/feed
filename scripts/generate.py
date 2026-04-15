@@ -177,8 +177,8 @@ def fetch_market_snapshot():
         for item in targets
     }
 
+    # Câmbio e BTC (AwesomeAPI)
     try:
-        # Câmbio e BTC (AwesomeAPI)
         r = requests.get(
             "https://economia.awesomeapi.com.br/json/last/USD-BRL,BTC-USD",
             headers=FEEDPARSER_HEADERS,
@@ -202,8 +202,11 @@ def fetch_market_snapshot():
             pct_txt, pct_css = format_change_pct(pct_raw)
             out[symbol]["change_pct"] = pct_txt
             out[symbol]["change_css"] = pct_css
+    except Exception as e:
+        print(f"  ⚠️  Câmbio/BTC indisponível: {e}")
 
-        # Barril de petróleo (Stooq - CL.F)
+    # Barril de petróleo (Stooq - CL.F)
+    try:
         oil_resp = requests.get("https://stooq.com/q/l/?s=cl.f&i=d", headers=FEEDPARSER_HEADERS, timeout=15)
         oil_resp.raise_for_status()
         line = oil_resp.text.strip().splitlines()[0] if oil_resp.text.strip() else ""
@@ -216,8 +219,11 @@ def fetch_market_snapshot():
             pct_txt, pct_css = format_change_pct(pct_raw)
             out["OIL-BRL"]["change_pct"] = pct_txt
             out["OIL-BRL"]["change_css"] = pct_css
+    except Exception as e:
+        print(f"  ⚠️  Petróleo indisponível: {e}")
 
-        # Ibovespa (HG Brasil Finance - funciona sem chave, com limite)
+    # Ibovespa (HG Brasil Finance - funciona sem chave, com limite)
+    try:
         hg_resp = requests.get("https://api.hgbrasil.com/finance", headers=FEEDPARSER_HEADERS, timeout=15)
         hg_resp.raise_for_status()
         hg = hg_resp.json()
@@ -231,7 +237,7 @@ def fetch_market_snapshot():
             out["IBOV"]["change_pct"] = pct_txt
             out["IBOV"]["change_css"] = pct_css
     except Exception as e:
-        print(f"  ⚠️  Não foi possível buscar cotações de mercado: {e}")
+        print(f"  ⚠️  Ibovespa indisponível: {e}")
 
     ordered = [out[item["symbol"]] for item in targets]
     return ordered
