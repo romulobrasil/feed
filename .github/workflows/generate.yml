@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout repositório
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Configurar Python
         uses: actions/setup-python@v6
@@ -27,13 +29,13 @@ jobs:
       - name: Instalar dependências
         run: pip install -r requirements.txt
 
-      - name: Gerar feed
-        run: python scripts/generate.py
-
       - name: Commit e push do index.html
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git fetch origin main
+          git reset --hard origin/main
+          python scripts/generate.py
           git add index.html
           git diff --staged --quiet || git commit -m "🗞️ feed atualizado $(TZ='America/Recife' date '+%d/%m/%Y %H:%M')"
           git push

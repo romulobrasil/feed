@@ -41,6 +41,8 @@ TZ               = ZoneInfo(CONFIG["app"]["timezone"])
 HIGHLIGHTS_COUNT = CONFIG["app"]["highlights_per_category"]
 HOURS_BACK       = 24
 HOME_BUILDER_CFG = CONFIG.get("home_builder", {})
+APP_TITLE        = CONFIG.get("app", {}).get("title", "feed")
+APP_SUBTITLE     = CONFIG.get("app", {}).get("subtitle", "seu briefing diário")
 
 GITHUB_USER      = CONFIG["app"].get("github_user", "")
 GITHUB_REPO      = CONFIG["app"].get("github_repo", "feed")
@@ -50,6 +52,39 @@ UPDATE_PWD_HASH  = CONFIG["app"].get("update_password_hash", "")
 
 def now_local():
     return datetime.now(TZ)
+
+PT_WEEKDAYS = {
+    0: "segunda-feira",
+    1: "terça-feira",
+    2: "quarta-feira",
+    3: "quinta-feira",
+    4: "sexta-feira",
+    5: "sábado",
+    6: "domingo",
+}
+
+PT_MONTHS = {
+    1: "janeiro",
+    2: "fevereiro",
+    3: "março",
+    4: "abril",
+    5: "maio",
+    6: "junho",
+    7: "julho",
+    8: "agosto",
+    9: "setembro",
+    10: "outubro",
+    11: "novembro",
+    12: "dezembro",
+}
+
+def format_pt_long_date(dt):
+    weekday = PT_WEEKDAYS.get(dt.weekday(), "")
+    month = PT_MONTHS.get(dt.month, "")
+    return f"{weekday}, {dt.day:02d} de {month} de {dt.year}"
+
+def format_pt_generated_at(dt):
+    return f"{format_pt_long_date(dt)} · {dt.strftime('%H:%M')}"
 
 def cutoff_time():
     return now_local() - timedelta(hours=HOURS_BACK)
@@ -182,40 +217,19 @@ def fetch_market_snapshot():
             out["OIL-BRL"]["change_pct"] = pct_txt
             out["OIL-BRL"]["change_css"] = pct_css
 
-        # Ibovespa: tenta mais de um endpoint para reduzir falhas por rate limit.
-        ibov_meta = None
-        ibov_urls = [
-            "https://query1.finance.yahoo.com/v8/finance/chart/%5EBVSP?range=5d&interval=1d",
-            "https://query2.finance.yahoo.com/v8/finance/chart/%5EBVSP?range=5d&interval=1d",
-            "https://query1.finance.yahoo.com/v7/finance/spark?symbols=%5EBVSP&range=1d&interval=1d",
-        ]
-        for ibov_url in ibov_urls:
-            try:
-                ibov_resp = requests.get(ibov_url, headers=FEEDPARSER_HEADERS, timeout=15)
-                ibov_resp.raise_for_status()
-                ibov_payload = ibov_resp.json()
-                if "chart" in ibov_payload:
-                    result = (ibov_payload.get("chart", {}).get("result") or [{}])[0]
-                    ibov_meta = result.get("meta", {})
-                elif "spark" in ibov_payload:
-                    spark = (ibov_payload.get("spark", {}).get("result") or [{}])[0]
-                    response = (spark.get("response") or [{}])[0]
-                    ibov_meta = response.get("meta", {})
-                if ibov_meta:
-                    break
-            except Exception:
-                continue
-
-        if ibov_meta:
-            ibov_price = ibov_meta.get("regularMarketPrice")
-            prev_close = ibov_meta.get("chartPreviousClose") or ibov_meta.get("previousClose")
-            if ibov_price is not None:
-                out["IBOV"]["price"] = f"{format_decimal_br(ibov_price, 0)} pts"
-                if prev_close:
-                    pct_raw = ((float(ibov_price) - float(prev_close)) / float(prev_close)) * 100
-                    pct_txt, pct_css = format_change_pct(pct_raw)
-                    out["IBOV"]["change_pct"] = pct_txt
-                    out["IBOV"]["change_css"] = pct_css
+        # Ibovespa (HG Brasil Finance - funciona sem chave, com limite)
+        hg_resp = requests.get("https://api.hgbrasil.com/finance", headers=FEEDPARSER_HEADERS, timeout=15)
+        hg_resp.raise_for_status()
+        hg = hg_resp.json()
+        ibov = (hg.get("results", {}).get("stocks", {}) or {}).get("IBOVESPA")
+        if ibov:
+            points = ibov.get("points")
+            variation = ibov.get("variation")
+            if points is not None:
+                out["IBOV"]["price"] = f"{format_decimal_br(points, 0)} pts"
+            pct_txt, pct_css = format_change_pct(variation)
+            out["IBOV"]["change_pct"] = pct_txt
+            out["IBOV"]["change_css"] = pct_css
     except Exception as e:
         print(f"  ⚠️  Não foi possível buscar cotações de mercado: {e}")
 
@@ -759,9 +773,9 @@ def build_html(categories_data, daily_summary):
         template = f.read()
 
     now         = now_local()
-    now_str     = now.strftime("%A, %d de %B de %Y · %H:%M")
+    now_str     = format_pt_generated_at(now)
     now_short   = now.strftime("%d/%m · %H:%M")
-    home_date   = now.strftime("%A, %d de %B de %Y").capitalize()
+    home_date   = format_pt_long_date(now).capitalize()
     total       = sum(sum(len(v) for v in cat["articles_by_source"].values()) for cat in categories_data)
 
     sidebar_nav      = build_sidebar_nav(categories_data)
@@ -771,6 +785,8 @@ def build_html(categories_data, daily_summary):
     category_views   = "\n".join(build_category_view(cat) for cat in categories_data)
 
     return (template
+        .replace("{{APP_TITLE}}", esc(APP_TITLE))
+        .replace("{{APP_SUBTITLE}}", esc(APP_SUBTITLE))
         .replace("{{GENERATED_AT}}", now_str)
         .replace("{{GENERATED_AT_SHORT}}", now_short)
         .replace("{{HOME_DATE}}", home_date)
