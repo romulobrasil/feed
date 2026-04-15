@@ -10,9 +10,26 @@ app:
   update_password_hash: "3c4dfb76c70336485a4b27499f395e3bd9b0955b2c18a45e2e3baca127dfddf8"
 
 gemini:
-  enabled: false
+  enabled: true
   model: "gemini-2.0-flash"
   max_tokens: 2048
+
+home_builder:
+  enabled: true
+  use_gemini: true
+  max_articles_per_category: 10
+  max_summary_items: 4
+  categories:
+    - id: tech
+      sources: ["Tecmundo", "Canaltech", "The Verge"]
+    - id: mundo
+      sources: ["BBC Brasil", "Reuters", "Al Jazeera"]
+    - id: brasil
+      sources: ["UOL Notícias", "G1"]
+    - id: ceara
+      sources: ["G1 Ceará"]
+    - id: entretenimento
+      sources: ["Omelete", "IGN Brasil"]
 
 categories:
   - id: tech
@@ -123,6 +140,16 @@ categories:
       Filmes, séries, streaming, Netflix, Prime Video, Disney+, HBO Max,
       animes, mangás, cinema, lançamentos, críticas, trailers, cultura pop,
       quadrinhos, games, cosplay, eventos de entretenimento.
+    blocked_keywords:
+      - bbb
+      - bbb 26
+      - bbb26
+      - big brother
+      - big brother brasil
+      - big brother brasil 26
+      - paredão
+      - paredao
+      - reality show
     feeds:
       - name: Omelete
         url: https://www.omelete.com.br/sitemap-news.xml
@@ -137,8 +164,6 @@ categories:
       bandas, álbuns, shows, turnês, festivais, lançamentos musicais,
       entrevistas com artistas, notícias da cena musical.
     feeds:
-      - name: Whiplash
-        url: https://whiplash.net/sitemap_ultimas.xml
       - name: Loudwire
         url: https://loudwire.com/feed/
       - name: Metal Hammer

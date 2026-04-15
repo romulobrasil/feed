@@ -327,8 +327,116 @@ body {
   color: var(--text3);
 }
 
+.market-strip {
+  margin-top: 14px;
+}
+
+.market-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.market-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 11px;
+}
+
+.market-label {
+  font-size: 0.64rem;
+  color: var(--text3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.market-price {
+  margin-top: 3px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.market-change {
+  margin-top: 2px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+.market-change.up { color: #2b8a3e; }
+.market-change.down { color: #c92a2a; }
+.market-change.flat { color: var(--text3); }
+
 /* ── Home sections ──────────────────────────────────────────── */
 .home-section { margin-bottom: 2.5rem; }
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+}
+
+.summary-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 14px 12px;
+}
+
+.summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.summary-title {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.summary-count {
+  font-size: 0.65rem;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+.summary-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary-item {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.summary-item:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.summary-text {
+  font-size: 0.78rem;
+  color: var(--text2);
+  line-height: 1.55;
+}
+
+.summary-source {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.summary-source:hover { text-decoration: underline; }
 
 .section-label {
   font-size: 0.66rem;
@@ -777,8 +885,9 @@ body {
           <h1 class="page-title">Seu briefing de hoje</h1>
           <p class="page-summary">{{DAILY_SUMMARY}}</p>
           <p class="page-total">{{TOTAL_ARTICLES}} notícias nas últimas 24h</p>
+          {{MARKET_SNAPSHOT}}
         </div>
-        {{HOME_SECTIONS}}
+        {{HOME_CATEGORY_SUMMARIES}}
       </div>
 
       <!-- CATEGORIES -->

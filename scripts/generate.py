@@ -40,6 +40,7 @@ GEMINI_RATE_LIMITED_UNTIL = 0.0
 TZ               = ZoneInfo(CONFIG["app"]["timezone"])
 HIGHLIGHTS_COUNT = CONFIG["app"]["highlights_per_category"]
 HOURS_BACK       = 24
+HOME_BUILDER_CFG = CONFIG.get("home_builder", {})
 
 GITHUB_USER      = CONFIG["app"].get("github_user", "")
 GITHUB_REPO      = CONFIG["app"].get("github_repo", "feed")
@@ -105,6 +106,136 @@ def is_blocked(title, summary, blocked_keywords):
 def esc(text):
     """Escapa caracteres HTML básicos."""
     return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace('"', "&quot;")
+
+def format_decimal_br(value, decimals=2):
+    try:
+        num = float(value)
+    except Exception:
+        return "N/D"
+    txt = f"{num:,.{decimals}f}"
+    return txt.replace(",", "X").replace(".", ",").replace("X", ".")
+
+def format_change_pct(value):
+    try:
+        num = float(value)
+    except Exception:
+        return ("N/D", "flat")
+    sign = "+" if num > 0 else ""
+    css = "up" if num > 0 else "down" if num < 0 else "flat"
+    return (f"{sign}{format_decimal_br(num, 2)}%", css)
+
+def fetch_market_snapshot():
+    """Busca cotações de mercado para mostrar no topo da home."""
+    targets = [
+        {"symbol": "USDBRL=X", "label": "Dólar/Real", "prefix": "R$ ", "decimals": 2},
+        {"symbol": "BTC-USD", "label": "Bitcoin/Dólar", "prefix": "US$ ", "decimals": 2},
+        {"symbol": "OIL-BRL", "label": "Barril de Petróleo", "prefix": "US$ ", "decimals": 2},
+        {"symbol": "IBOV", "label": "Ibovespa (IBOV)", "prefix": "", "decimals": 0},
+    ]
+    out = {
+        item["symbol"]: {
+            "label": item["label"],
+            "price": "N/D",
+            "change_pct": "N/D",
+            "change_css": "flat",
+        }
+        for item in targets
+    }
+
+    try:
+        # Câmbio e BTC (AwesomeAPI)
+        r = requests.get(
+            "https://economia.awesomeapi.com.br/json/last/USD-BRL,BTC-USD",
+            headers=FEEDPARSER_HEADERS,
+            timeout=15,
+        )
+        r.raise_for_status()
+        payload = r.json()
+        fx = payload.get("USDBRL", {})
+        btc = payload.get("BTCUSD", {})
+
+        for symbol, row in (("USDBRL=X", fx), ("BTC-USD", btc)):
+            if not row:
+                continue
+            price_raw = row.get("bid") or row.get("ask")
+            pct_raw = row.get("pctChange")
+            item = next(t for t in targets if t["symbol"] == symbol)
+            out[symbol]["price"] = (
+                f"{item['prefix']}{format_decimal_br(price_raw, item['decimals'])}"
+                if price_raw is not None else "N/D"
+            )
+            pct_txt, pct_css = format_change_pct(pct_raw)
+            out[symbol]["change_pct"] = pct_txt
+            out[symbol]["change_css"] = pct_css
+
+        # Barril de petróleo (Stooq - CL.F)
+        oil_resp = requests.get("https://stooq.com/q/l/?s=cl.f&i=d", headers=FEEDPARSER_HEADERS, timeout=15)
+        oil_resp.raise_for_status()
+        line = oil_resp.text.strip().splitlines()[0] if oil_resp.text.strip() else ""
+        cols = [c.strip() for c in line.split(",")]
+        if len(cols) >= 7 and cols[3] != "N/D" and cols[6] != "N/D":
+            open_price = float(cols[3])
+            close_price = float(cols[6])
+            pct_raw = ((close_price - open_price) / open_price) * 100 if open_price else 0.0
+            out["OIL-BRL"]["price"] = f"US$ {format_decimal_br(close_price, 2)}"
+            pct_txt, pct_css = format_change_pct(pct_raw)
+            out["OIL-BRL"]["change_pct"] = pct_txt
+            out["OIL-BRL"]["change_css"] = pct_css
+
+        # Ibovespa: tenta mais de um endpoint para reduzir falhas por rate limit.
+        ibov_meta = None
+        ibov_urls = [
+            "https://query1.finance.yahoo.com/v8/finance/chart/%5EBVSP?range=5d&interval=1d",
+            "https://query2.finance.yahoo.com/v8/finance/chart/%5EBVSP?range=5d&interval=1d",
+            "https://query1.finance.yahoo.com/v7/finance/spark?symbols=%5EBVSP&range=1d&interval=1d",
+        ]
+        for ibov_url in ibov_urls:
+            try:
+                ibov_resp = requests.get(ibov_url, headers=FEEDPARSER_HEADERS, timeout=15)
+                ibov_resp.raise_for_status()
+                ibov_payload = ibov_resp.json()
+                if "chart" in ibov_payload:
+                    result = (ibov_payload.get("chart", {}).get("result") or [{}])[0]
+                    ibov_meta = result.get("meta", {})
+                elif "spark" in ibov_payload:
+                    spark = (ibov_payload.get("spark", {}).get("result") or [{}])[0]
+                    response = (spark.get("response") or [{}])[0]
+                    ibov_meta = response.get("meta", {})
+                if ibov_meta:
+                    break
+            except Exception:
+                continue
+
+        if ibov_meta:
+            ibov_price = ibov_meta.get("regularMarketPrice")
+            prev_close = ibov_meta.get("chartPreviousClose") or ibov_meta.get("previousClose")
+            if ibov_price is not None:
+                out["IBOV"]["price"] = f"{format_decimal_br(ibov_price, 0)} pts"
+                if prev_close:
+                    pct_raw = ((float(ibov_price) - float(prev_close)) / float(prev_close)) * 100
+                    pct_txt, pct_css = format_change_pct(pct_raw)
+                    out["IBOV"]["change_pct"] = pct_txt
+                    out["IBOV"]["change_css"] = pct_css
+    except Exception as e:
+        print(f"  ⚠️  Não foi possível buscar cotações de mercado: {e}")
+
+    ordered = [out[item["symbol"]] for item in targets]
+    return ordered
+
+def build_market_snapshot_html(market_snapshot):
+    cards = []
+    for item in market_snapshot:
+        cards.append(
+            f"""<article class="market-card">
+  <div class="market-label">{esc(item['label'])}</div>
+  <div class="market-price">{esc(item['price'])}</div>
+  <div class="market-change {esc(item['change_css'])}">{esc(item['change_pct'])}</div>
+</article>"""
+        )
+    return f"""<div class="market-strip">
+  <div class="section-label">Mercado agora</div>
+  <div class="market-grid">{"".join(cards)}</div>
+</div>"""
 
 def looks_portuguese(text):
     """Heurística leve para reduzir chamadas de tradução."""
@@ -206,6 +337,53 @@ def flatten_articles(articles_by_source):
     all_articles = [a for arts in articles_by_source.values() for a in arts]
     all_articles.sort(key=lambda x: x["published_iso"], reverse=True)
     return all_articles
+
+def get_home_builder_config():
+    category_sources = {}
+    category_order = []
+    for item in HOME_BUILDER_CFG.get("categories", []):
+        cat_id = item.get("id")
+        if not cat_id:
+            continue
+        category_order.append(cat_id)
+        category_sources[cat_id] = set(item.get("sources", []))
+    return {
+        "enabled": bool(HOME_BUILDER_CFG.get("enabled", True)),
+        "use_gemini": bool(HOME_BUILDER_CFG.get("use_gemini", True)),
+        "max_articles_per_category": int(HOME_BUILDER_CFG.get("max_articles_per_category", 10)),
+        "max_summary_items": int(HOME_BUILDER_CFG.get("max_summary_items", 4)),
+        "category_order": category_order,
+        "category_sources": category_sources,
+    }
+
+def dedupe_articles_by_title(articles):
+    seen = set()
+    uniq = []
+    for art in articles:
+        key = re.sub(r"\s+", " ", (art.get("title") or "").lower()).strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        uniq.append(art)
+    return uniq
+
+def deterministic_category_match(article, category_niche):
+    text = f"{article.get('title', '')} {article.get('summary', '')}".lower()
+    keywords = [k.strip().lower() for k in category_niche.split(",")]
+    keywords = [k for k in keywords if len(k) >= 4]
+    if not keywords:
+        return True
+    return any(kw in text for kw in keywords)
+
+def select_home_articles_for_category(cat, home_cfg):
+    allowed_sources = home_cfg["category_sources"].get(cat["id"], set())
+    filtered = [
+        a for a in cat["all_articles"]
+        if (not allowed_sources or a["source"] in allowed_sources)
+        and deterministic_category_match(a, cat.get("nicho", ""))
+    ]
+    filtered = dedupe_articles_by_title(filtered)
+    return filtered[:home_cfg["max_articles_per_category"]]
 
 # ── Gemini ────────────────────────────────────────────────────────────────────
 
@@ -382,6 +560,58 @@ Destaques:
     resp = call_gemini(prompt)
     return resp or "Não foi possível gerar o resumo hoje."
 
+def generate_category_summary_items(cat, candidate_articles, home_cfg):
+    max_items = max(1, home_cfg["max_summary_items"])
+    if not candidate_articles:
+        return []
+
+    can_use_ai = home_cfg["use_gemini"] and GEMINI_ENABLED and bool(GEMINI_API_KEY)
+    if can_use_ai:
+        listing = "\n".join(
+            f"{i+1}. [{a['source']}] {a['title']} | {a.get('summary', '')[:180]} | {a['link']}"
+            for i, a in enumerate(candidate_articles)
+        )
+        prompt = f"""Você é editor de newsletter. Com base na categoria "{cat['label']}" e nas notícias abaixo,
+selecione os {max_items} eventos mais relevantes das últimas 24h e escreva um resumo curto (1 frase por item).
+Responda SOMENTE com JSON array no formato:
+[{{"index": 1, "text": "resumo"}}, ...]
+`index` é o número da notícia escolhida na lista (1-based), sem repetir.
+
+Notícias:
+{listing}"""
+        resp = call_gemini(prompt, json_mode=True)
+        if resp:
+            try:
+                clean = re.sub(r"```(?:json)?|```", "", resp).strip()
+                rows = json.loads(clean)
+                out = []
+                for row in rows:
+                    idx = int(row.get("index", 0)) - 1
+                    if idx < 0 or idx >= len(candidate_articles):
+                        continue
+                    art = candidate_articles[idx]
+                    text = str(row.get("text", "")).strip()
+                    if not text:
+                        continue
+                    out.append({
+                        "text": text,
+                        "source": art["source"],
+                        "url": art["link"],
+                    })
+                    if len(out) >= max_items:
+                        break
+                if out:
+                    return out
+            except Exception as e:
+                print(f"   ⚠️  Erro ao parsear resumo da categoria {cat['id']}: {e}")
+
+    # Fallback determinístico (70% regras): headlines mais recentes já filtradas
+    return [{
+        "text": art["title"],
+        "source": art["source"],
+        "url": art["link"],
+    } for art in candidate_articles[:max_items]]
+
 # ── HTML builders ─────────────────────────────────────────────────────────────
 
 def build_card(art):
@@ -427,18 +657,45 @@ def build_news_item(art):
   <span class="news-arrow">→</span>
 </a>"""
 
-def build_home_sections(categories_data):
-    html = ""
-    for cat in categories_data:
-        highlights = [a for a in cat["all_articles"] if a["title"] in cat["highlight_titles"]]
-        if not highlights:
+def build_home_category_summaries(categories_data):
+    home_cfg = get_home_builder_config()
+    if not home_cfg["enabled"]:
+        return '<div class="home-section"><div class="section-label">Resumo por categoria desativado</div></div>'
+
+    cat_by_id = {c["id"]: c for c in categories_data}
+    cards = []
+    for cat_id in home_cfg["category_order"]:
+        cat = cat_by_id.get(cat_id)
+        if not cat:
             continue
-        cards = "\n".join(build_card(a) for a in highlights)
-        html += f"""<div class="home-section">
-  <div class="section-label">{cat['emoji']} {esc(cat['label'])}</div>
-  <div class="cards-grid">{cards}</div>
-</div>\n"""
-    return html
+        candidates = select_home_articles_for_category(cat, home_cfg)
+        summary_items = generate_category_summary_items(cat, candidates, home_cfg)
+        if not summary_items:
+            continue
+        list_items = "\n".join(
+            f"""<li class="summary-item">
+  <div class="summary-text">{esc(item['text'])}</div>
+  <a class="summary-source" href="{esc(item['url'])}" target="_blank" rel="noopener">Fonte: {esc(item['source'])}</a>
+</li>"""
+            for item in summary_items
+        )
+        cards.append(f"""<article class="summary-card">
+  <div class="summary-head">
+    <h3 class="summary-title">{cat['emoji']} {esc(cat['label'])}</h3>
+    <span class="summary-count">{len(candidates)} notícia(s) analisada(s)</span>
+  </div>
+  <ul class="summary-list">{list_items}</ul>
+</article>""")
+
+    if not cards:
+        return '<div class="home-section"><div class="section-label">Sem resumos disponíveis</div></div>'
+
+    return f"""<div class="home-section">
+  <div class="section-label">Resumo 24h por categoria</div>
+  <div class="summary-grid">
+    {"".join(cards)}
+  </div>
+</div>"""
 
 def build_category_view(cat):
     cat_id   = cat["id"]
@@ -508,7 +765,9 @@ def build_html(categories_data, daily_summary):
     total       = sum(sum(len(v) for v in cat["articles_by_source"].values()) for cat in categories_data)
 
     sidebar_nav      = build_sidebar_nav(categories_data)
-    home_sections    = build_home_sections(categories_data)
+    market_snapshot  = fetch_market_snapshot()
+    market_html      = build_market_snapshot_html(market_snapshot)
+    home_category_summaries = build_home_category_summaries(categories_data)
     category_views   = "\n".join(build_category_view(cat) for cat in categories_data)
 
     return (template
@@ -517,8 +776,9 @@ def build_html(categories_data, daily_summary):
         .replace("{{HOME_DATE}}", home_date)
         .replace("{{DAILY_SUMMARY}}", esc(daily_summary))
         .replace("{{TOTAL_ARTICLES}}", str(total))
+        .replace("{{MARKET_SNAPSHOT}}", market_html)
         .replace("{{SIDEBAR_NAV}}", sidebar_nav)
-        .replace("{{HOME_SECTIONS}}", home_sections)
+        .replace("{{HOME_CATEGORY_SUMMARIES}}", home_category_summaries)
         .replace("{{CATEGORY_VIEWS}}", category_views)
         .replace("{{GITHUB_USER}}", GITHUB_USER)
         .replace("{{GITHUB_REPO}}", GITHUB_REPO)
@@ -533,32 +793,29 @@ def main():
     print(f"{'='*52}\n")
 
     categories_data = []
-    all_highlights  = []
 
     for cat in CONFIG["categories"]:
         print(f"📡 {cat['label']}...")
         articles_by_source = fetch_category(cat)
-        articles_by_source = translate_articles(articles_by_source)
         all_articles       = flatten_articles(articles_by_source)
         total              = len(all_articles)
         print(f"   → {total} artigos")
-
-        print(f"   → Selecionando destaques...")
-        highlight_titles = highlight_articles(all_articles, cat)
-        all_highlights.extend(list(highlight_titles))
 
         categories_data.append({
             "id":                cat["id"],
             "label":             cat["label"],
             "emoji":             cat["emoji"],
+                    "nicho":             cat.get("nicho", ""),
             "articles_by_source": articles_by_source,
             "all_articles":      all_articles,
-            "highlight_titles":  highlight_titles,
         })
-        time.sleep(1)
+        time.sleep(0.35)
 
-    print("\n✍️  Resumo do dia...")
-    daily_summary = generate_daily_summary(all_highlights)
+    home_cfg = get_home_builder_config()
+    if home_cfg["use_gemini"] and GEMINI_ENABLED and GEMINI_API_KEY:
+        daily_summary = "Curadoria híbrida 70/30: regras de fonte + seleção editorial por IA."
+    else:
+        daily_summary = "Curadoria por regras (modo gratuito): categorias e fontes que você definiu nas últimas 24h."
 
     print("🎨 Gerando HTML...")
     html = build_html(categories_data, daily_summary)
