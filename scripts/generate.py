@@ -177,6 +177,8 @@ def fetch_market_snapshot():
         for item in targets
     }
 
+    hg = None
+
     # Câmbio e BTC (AwesomeAPI)
     try:
         r = requests.get(
@@ -222,11 +224,46 @@ def fetch_market_snapshot():
     except Exception as e:
         print(f"  ⚠️  Petróleo indisponível: {e}")
 
-    # Ibovespa (HG Brasil Finance - funciona sem chave, com limite)
+    # HG Brasil Finance (fallback para USD e fonte do IBOV)
     try:
         hg_resp = requests.get("https://api.hgbrasil.com/finance", headers=FEEDPARSER_HEADERS, timeout=15)
         hg_resp.raise_for_status()
         hg = hg_resp.json()
+    except Exception as e:
+        print(f"  ⚠️  HG Brasil Finance indisponível: {e}")
+
+    if out["USDBRL=X"]["price"] == "N/D" and hg:
+        try:
+            usd = (hg.get("results", {}).get("currencies", {}) or {}).get("USD") or {}
+            buy = usd.get("buy")
+            variation = usd.get("variation")
+            out["USDBRL=X"]["price"] = f"R$ {format_decimal_br(buy, 2)}" if buy is not None else "N/D"
+            pct_txt, pct_css = format_change_pct(variation)
+            out["USDBRL=X"]["change_pct"] = pct_txt
+            out["USDBRL=X"]["change_css"] = pct_css
+        except Exception:
+            pass
+
+    if out["BTC-USD"]["price"] == "N/D":
+        try:
+            cg_resp = requests.get(
+                "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true",
+                headers=FEEDPARSER_HEADERS,
+                timeout=15,
+            )
+            cg_resp.raise_for_status()
+            cg = cg_resp.json()
+            btc = cg.get("bitcoin") or {}
+            price = btc.get("usd")
+            change_pct = btc.get("usd_24h_change")
+            out["BTC-USD"]["price"] = f"US$ {format_decimal_br(price, 2)}" if price is not None else "N/D"
+            pct_txt, pct_css = format_change_pct(change_pct)
+            out["BTC-USD"]["change_pct"] = pct_txt
+            out["BTC-USD"]["change_css"] = pct_css
+        except Exception:
+            pass
+
+    if hg:
         ibov = (hg.get("results", {}).get("stocks", {}) or {}).get("IBOVESPA")
         if ibov:
             points = ibov.get("points")
@@ -236,8 +273,6 @@ def fetch_market_snapshot():
             pct_txt, pct_css = format_change_pct(variation)
             out["IBOV"]["change_pct"] = pct_txt
             out["IBOV"]["change_css"] = pct_css
-    except Exception as e:
-        print(f"  ⚠️  Ibovespa indisponível: {e}")
 
     ordered = [out[item["symbol"]] for item in targets]
     return ordered

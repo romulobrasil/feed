@@ -18,7 +18,7 @@ jobs:
       - name: Checkout repositório
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Configurar Python
         uses: actions/setup-python@v6
@@ -33,7 +33,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git fetch origin main
+          git fetch --depth=1 origin main
           git reset --hard origin/main
           python scripts/generate.py
           git add index.html
