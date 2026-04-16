@@ -36,8 +36,12 @@
   --anchorbar-h:37px;
 }
 
-html { scroll-behavior: smooth; }
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
 body {
+  height: 100%;
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
@@ -45,10 +49,16 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 /* ── Layout ─────────────────────────────────────────────────── */
-.layout { display: flex; min-height: 100vh; background: var(--sidebar-bg); }
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--sidebar-bg);
+}
 
 /* ── Sidebar ────────────────────────────────────────────────── */
 .sidebar {
@@ -229,19 +239,25 @@ body {
 .main {
   margin-left: var(--sidebar-w);
   flex: 1;
+  height: 100vh;
   min-width: 0;
   display: flex;
   flex-direction: column;
   padding: 8px 8px 8px 0;
+  overflow: hidden;
 }
 
 .main-inner {
   flex: 1;
+  min-height: 0;
   min-width: 0;
   display: flex;
   flex-direction: column;
   background-color: var(--bg);
   border-radius: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Topbar mobile */
