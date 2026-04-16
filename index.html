@@ -111,11 +111,45 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 6px 0;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.08) transparent;
 }
 .sid-nav::-webkit-scrollbar { width: 3px; }
 .sid-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+
+.custom-scrollbar {
+  margin-right: -8px;
+  padding-right: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(26, 23, 20, 0.22) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(26, 23, 20, 0.22);
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(26, 23, 20, 0.34);
+}
+
+.sidebar .custom-scrollbar {
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+.sidebar .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.14);
+}
+
+.sidebar .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.22);
+}
 
 .nav-btn {
   display: flex;
@@ -871,10 +905,10 @@ body {
       <div class="logo" onclick="showView('home')">
         <span class="logo-dot"></span>feed
       </div>
-      <div class="sid-meta">quinta-feira, 16 de abril de 2026 · 09:54</div>
+      <div class="sid-meta">quinta-feira, 16 de abril de 2026 · 10:09</div>
     </div>
 
-    <nav class="sid-nav" id="sidNav">
+    <nav class="sid-nav custom-scrollbar" id="sidNav">
       <button class="nav-btn active" data-view="home" onclick="showView('home')">
         <span class="nav-emoji">🏠</span>
         <span class="nav-label">Home</span>
@@ -888,8 +922,8 @@ body {
 <div class="nav-subs"><a class="nav-sub" href="#tech-tecmundo" onclick="showView('tech')">Tecmundo <span style="opacity:.5;font-size:.65rem">(27)</span></a>
 <a class="nav-sub" href="#tech-canaltech" onclick="showView('tech')">Canaltech <span style="opacity:.5;font-size:.65rem">(46)</span></a>
 <a class="nav-sub" href="#tech-the-verge" onclick="showView('tech')">The Verge <span style="opacity:.5;font-size:.65rem">(8)</span></a>
-<a class="nav-sub" href="#tech-hacker-news" onclick="showView('tech')">Hacker News <span style="opacity:.5;font-size:.65rem">(19)</span></a>
-<a class="nav-sub" href="#tech-wired" onclick="showView('tech')">Wired <span style="opacity:.5;font-size:.65rem">(21)</span></a>
+<a class="nav-sub" href="#tech-hacker-news" onclick="showView('tech')">Hacker News <span style="opacity:.5;font-size:.65rem">(18)</span></a>
+<a class="nav-sub" href="#tech-wired" onclick="showView('tech')">Wired <span style="opacity:.5;font-size:.65rem">(22)</span></a>
 </div>
 <button class="nav-btn" data-view="ia_dev" onclick="showView('ia_dev')">
   <span class="nav-emoji">🤖</span>
@@ -948,13 +982,13 @@ body {
         <span>↻</span> Atualizar feed
       </button>
       <div class="trigger-status" id="trigStatus"></div>
-      <div class="update-meta">Gerado: 16/04 · 09:54</div>
+      <div class="update-meta">Gerado: 16/04 · 10:09</div>
     </div>
   </aside>
 
   <!-- ── Main ── -->
   <div class="main">
-    <div class="main-inner">
+    <div class="main-inner custom-scrollbar">
 
     <header class="topbar">
       <button class="hamburger" id="hamburger" aria-label="Menu">
@@ -977,15 +1011,15 @@ body {
   <div class="market-grid"><article class="market-card">
   <div class="market-label">Dólar/Real</div>
   <div class="market-price">R$ 4,99</div>
-  <div class="market-change up">+0,08%</div>
+  <div class="market-change up">+0,06%</div>
 </article><article class="market-card">
   <div class="market-label">Bitcoin/Dólar</div>
-  <div class="market-price">US$ 74.615,00</div>
-  <div class="market-change up">+0,32%</div>
+  <div class="market-price">US$ 74.728,00</div>
+  <div class="market-change up">+0,58%</div>
 </article><article class="market-card">
   <div class="market-label">Barril de Petróleo</div>
-  <div class="market-price">US$ 92,18</div>
-  <div class="market-change up">+0,99%</div>
+  <div class="market-price">US$ 92,48</div>
+  <div class="market-change up">+1,31%</div>
 </article><article class="market-card">
   <div class="market-label">Ibovespa (IBOV)</div>
   <div class="market-price">197.738 pts</div>
@@ -999,9 +1033,13 @@ body {
     <article class="summary-card">
   <div class="summary-head">
     <h3 class="summary-title">🖥️ Tech &amp; TI</h3>
-    <span class="summary-count">1 notícia(s) analisada(s)</span>
+    <span class="summary-count">2 notícia(s) analisada(s)</span>
   </div>
   <ul class="summary-list"><li class="summary-item">
+  <div class="summary-text">Meta blames RAM shortage for $100 Quest 3 price hike</div>
+  <a class="summary-source" href="https://www.theverge.com/tech/912921/meta-quest-3-3s-vr-price-hike-ram-memory-shortage" target="_blank" rel="noopener">Fonte: The Verge</a>
+</li>
+<li class="summary-item">
   <div class="summary-text">Samsung traz Galaxy A57 e A37 para o Brasil com recursos de top; veja preços</div>
   <a class="summary-source" href="https://canaltech.com.br/smartphone/samsung-traz-galaxy-a57-e-a37-para-o-brasil-com-recursos-de-top-veja-precos/" target="_blank" rel="noopener">Fonte: Canaltech</a>
 </li></ul>
@@ -1011,16 +1049,16 @@ body {
     <span class="summary-count">3 notícia(s) analisada(s)</span>
   </div>
   <ul class="summary-list"><li class="summary-item">
+  <div class="summary-text">Criança morre após acidente com quatro carros na BR-010</div>
+  <a class="summary-source" href="https://g1.globo.com/to/tocantins/noticia/2026/04/16/crianca-morre-apos-acidente-com-quatro-carros-na-br-010.ghtml" target="_blank" rel="noopener">Fonte: G1</a>
+</li>
+<li class="summary-item">
   <div class="summary-text">5 pontos sobre Quaest de abril, que mostra Flávio Bolsonaro numericamente à frente de Lula no 2º turno</div>
   <a class="summary-source" href="https://g1.globo.com/politica/eleicoes/2026/noticia/2026/04/16/5-pontos-sobre-quaest-de-abril.ghtml" target="_blank" rel="noopener">Fonte: G1</a>
 </li>
 <li class="summary-item">
   <div class="summary-text">Veja os setores e exportadores habilitados para linha de crédito de R$ 15 bilhões do governo federal</div>
   <a class="summary-source" href="https://g1.globo.com/economia/noticia/2026/04/16/veja-os-setores-e-exportadores-habilitados-para-linha-de-credito-de-r-15-bilhoes-do-governo-federal.ghtml" target="_blank" rel="noopener">Fonte: G1</a>
-</li>
-<li class="summary-item">
-  <div class="summary-text">Amazônia Que Eu Quero amplia debate sobre democracia digital e segurança eleitoral em Macapá</div>
-  <a class="summary-source" href="https://g1.globo.com/ap/amapa/noticia/2026/04/16/amazonia-que-eu-quero-amplia-debate-sobre-democracia-digital-e-seguranca-eleitoral-em-macapa.ghtml" target="_blank" rel="noopener">Fonte: G1</a>
 </li></ul>
 </article><article class="summary-card">
   <div class="summary-head">
@@ -1086,7 +1124,16 @@ body {
     <span class="source-name">Tecmundo</span>
     <span class="source-count">27 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://www.tecmundo.com.br/voxel/504050-pragmata-e-pirateado-um-dia-antes-do-lancamento-apos-denuvo-ser-quebrado.htm" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://www.tecmundo.com.br/produto/412442-positivo-lanca-primeiro-notebook-com-intel-core-ultra-3-de-uma-marca-brasileira.htm" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://tm.ibxk.com.br/2026/04/15/Positivo_Master_Copilot_PC_b781bf51cc.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Positivo lança primeiro notebook com Intel Core Ultra 3 de uma marca brasileira</span>
+    
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.tecmundo.com.br/voxel/504050-pragmata-e-pirateado-um-dia-antes-do-lancamento-apos-denuvo-ser-quebrado.htm" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://tm.ibxk.com.br/2026/04/16/PRAGMATA_PIRATA_72c6c557e0.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:45</span>
@@ -1239,15 +1286,6 @@ body {
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://www.tecmundo.com.br/produto/412431-trump-phone-celular-de-donald-trump-tem-site-atualizado-mas-segue-sem-estreia-definida.htm" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://tm.ibxk.com.br/2026/04/15/trump_phone_tem_novo_site_f4dd51e78f.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 18:00</span>
-    <span class="ni-title">Trump Phone: celular de Donald Trump tem site atualizado mas segue sem estreia definida</span>
-    
-  </div>
-  <span class="news-arrow">→</span>
-</a>
 <a class="news-item" href="https://www.tecmundo.com.br/voxel/504046-ps5-teve-aumento-expressivo-de-vendas-nos-eua-pouco-antes-de-ficar-mais-caro.htm" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://tm.ibxk.com.br/2026/04/15/CHECKPOINT_VOXEL_514489d6cd.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
@@ -1335,7 +1373,34 @@ body {
     <span class="source-name">Canaltech</span>
     <span class="source-count">46 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://canaltech.com.br/seguranca/annas-archive-perde-processo-e-tera-que-pagar-indenizacao-milionaria-ao-spotify/" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://canaltech.com.br/apps/canva-lanca-edicao-completa-com-ia-por-comandos-de-texto-e-da-dica-de-prompt/" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://t.ctcdn.com.br/DUcnpIusKLND3AFhksA_AfHc80M=/700x394/smart/i1119931.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:02</span>
+    <span class="ni-title">Canva lança edição completa com IA por comandos de texto e dá dica de prompt</span>
+    <p class="ni-desc">O Canva lançou nesta quinta-feira (16) o Canva IA 2.0, sua maior e mais profunda atualização desde a criação da plataforma, em 2013. O anúncio foi feito no evento Canva Create, em …</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://canaltech.com.br/games/fortnite-festival-temporada-14-traz-laufey-e-suporte-para-baterias-e-microfone/" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://t.ctcdn.com.br/tm7kvBQgAvFZO_O_kh-0EItyxeM=/700x394/smart/i1119901.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Fortnite Festival: Temporada 14 traz Laufey e suporte para baterias e microfone</span>
+    <p class="ni-desc">A Epic Games anunciou a chegada da cantora islandesa de jazz-pop Laufey ao Fortnite Festival como o ícone da Temporada 14. A cantora estará disponível a partir desta quinta-feira (…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://canaltech.com.br/produtos/amazon-faz-queima-de-caixa-de-som-gigante-da-jbl-boombox-4-com-preco-parcelado/" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://t.ctcdn.com.br/8xk9L-kT2W88iTlbKY2R-ZpazC8=/700x394/smart/i1043209.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Amazon faz queima de caixa de som gigante da JBL; Boombox 4 com preço parcelado</span>
+    <p class="ni-desc">A Amazon colocou em oferta uma das caixas de som mais potentes da categoria portátil. A JBL Boombox 4 sai por R$ 2.375,00, com possibilidade de parcelamento em até 12x sem juros e …</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://canaltech.com.br/seguranca/annas-archive-perde-processo-e-tera-que-pagar-indenizacao-milionaria-ao-spotify/" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://t.ctcdn.com.br/0P2GcFqpvhtMMLSQnos1zrEsaBY=/700x394/smart/i1111777.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:45</span>
@@ -1721,33 +1786,6 @@ body {
     <p class="ni-desc">A nova geração de CPUs da Intel chegou ao mercado nesse início de 2026, depois de uma grande expectativa por conta da nova litografia 18A e a eficiência prometida pelo Time Azul. A…</p>
   </div>
   <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://canaltech.com.br/tv/xiaomi-lanca-tv-de-75-polegdas-por-apenas-r-2419-veja-especificacoes/" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://t.ctcdn.com.br/xxklpj_GMYUVbT4Y2LylhuEAoJU=/700x394/smart/i1119611.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 10:56</span>
-    <span class="ni-title">Xiaomi lança TV de 75 polegadas por apenas R$ 2.419; veja especificações</span>
-    <p class="ni-desc">A Xiaomi colocou à venda a linha Redmi TV A Pro 2026 na China, com opções que vão de 43 a 75 polegadas. O modelo de 75 polegadas custa 3.299 yuans, cerca de R$ 2.419 na conversão d…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://canaltech.com.br/apps/youtube-music-libera-novo-visual-do-tocando-agora-veja-como-vai-ficar/" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://t.ctcdn.com.br/DPmXzHBidVKLb04Hq_-AjclVt_E=/700x394/smart/i1119609.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 10:50</span>
-    <span class="ni-title">YouTube Music libera novo visual do &quot;Tocando Agora&quot;; veja como vai ficar</span>
-    <p class="ni-desc">O YouTube Music começou a liberar globalmente um novo visual para a tela “Tocando Agora”, com mudanças na forma que o player mostra a fila de reprodução. A atualização está chegand…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://canaltech.com.br/entretenimento/filme-de-game-of-thrones-ganha-titulo-e-adapta-historia-iconica-da-saga/" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://t.ctcdn.com.br/yE7klsxSlIffqWQ9dS49ZAQz2Ns=/700x394/smart/i1119559.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 10:22</span>
-    <span class="ni-title">Filme de Game of Thrones ganha título e adapta história icônica da saga</span>
-    <p class="ni-desc">O aguardado filme de Game of Thrones ganhou um título oficial para chamar de seu: Game of Thrones: Aegon’s Conquest, que em bom português se traduz para a Conquista de Aegon.    Ga…</p>
-  </div>
-  <span class="news-arrow">→</span>
 </a></div>
 </div>
 <div class="source-block" id="tech-the-verge">
@@ -1755,7 +1793,34 @@ body {
     <span class="source-name">The Verge</span>
     <span class="source-count">8 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://www.theverge.com/tech/912668/govee-lightwall-color-changing-led-aluminum-frame-smart-home" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://www.theverge.com/tech/913068/canva-ai-2-update-prompt-based-editing-availability" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:07</span>
+    <span class="ni-title">Canva’s AI 2.0 update goes all in on prompt-powered design tools</span>
+    <p class="ni-desc">Canva has overhauled its design and workspace suite as it attempts to become the ultimate centralized hub for AI-powered content creation. The platform announced its Canva AI 2.0 u…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.theverge.com/tech/912921/meta-quest-3-3s-vr-price-hike-ram-memory-shortage" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Meta blames RAM shortage for $100 Quest 3 price hike</span>
+    <p class="ni-desc">Meta is the next tech company to hike up hardware prices due to the global memory shortage. Beginning April 19th, Meta's 128GB Quest 3S VR headset will cost $349.99, the 256GB Ques…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.theverge.com/tech/913026/intel-core-series-3-panther-lake-18a-budget-chips-specs" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Intel&amp;#8217;s cheaper Panther Lake chips are for budget-friendly laptops</span>
+    <p class="ni-desc">Intel is announcing a family of cheaper Panther Lake laptop processors called the Core Series 3 line. They're built on the same Intel 18A process as the higher-end Core Ultra Serie…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.theverge.com/tech/912668/govee-lightwall-color-changing-led-aluminum-frame-smart-home" target="_blank" rel="noopener">
   
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:00</span>
@@ -1799,39 +1864,12 @@ body {
     <p class="ni-desc">Live Nation-Ticketmaster is an illegal monopolist, a Manhattan jury found, according to Bloomberg. The jury found the company liable on three counts: illegally monopolizing the mar…</p>
   </div>
   <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.theverge.com/policy/912680/ftc-ad-agency-settlement-trust-safety" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 16:00</span>
-    <span class="ni-title">FTC pushes ad agencies into dropping brand safety rules</span>
-    <p class="ni-desc">The Federal Trade Commission (FTC) and a group of eight states have announced a proposed settlement with big ad agencies that will prevent them from working together to avoid certa…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.theverge.com/tech/911809/ikea-varmblixt-smart-donut-lamp-review-matter-thread" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 15:30</span>
-    <span class="ni-title">Ikea&amp;#8217;s smart donut lamp is a sweet treat</span>
-    <p class="ni-desc">Ikea's popular Varmblixt lamp just got a smart home glow-up. The delightfully bulbous light now features color-changing, dimming, and smart home control. I tested the new smart lam…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.theverge.com/tech/912638/google-gemini-mac-app" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 15:10</span>
-    <span class="ni-title">Google launches a Gemini AI app on Mac</span>
-    <p class="ni-desc">Google is launching a new Gemini app on Mac that allows you to interact with the AI assistant without switching windows on your desktop. With the app, you can use the Option + Spac…</p>
-  </div>
-  <span class="news-arrow">→</span>
 </a></div>
 </div>
 <div class="source-block" id="tech-hacker-news">
   <div class="source-header">
     <span class="source-name">Hacker News</span>
-    <span class="source-count">19 notícias</span>
+    <span class="source-count">18 notícias</span>
   </div>
   <div class="news-list"><a class="news-item" href="https://discuss.ai.google.dev/t/unexpected-54k-billing-spike-in-13-hours-firebase-browser-key-without-api-restrictions-used-for-gemini-requests/140262" target="_blank" rel="noopener">
   
@@ -1853,18 +1891,6 @@ Comments URL: https://news.ycombinator.com/item?…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://www.technologyreview.com/2026/04/16/1135179/anthropogenic-noise-hurting-animals/" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:25</span>
-    <span class="ni-title">The noise we make is hurting animals. Can we learn to shut up?</span>
-    <p class="ni-desc">Article URL: https://www.technologyreview.com/2026/04/16/1135179/anthropogenic-noise-hurting-animals/
-Comments URL: https://news.ycombinator.com/item?id=47791507
-Points: 28
-# Comme…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
 <a class="news-item" href="https://reich.hms.harvard.edu/sites/reich.hms.harvard.edu/files/inline-files/2026_Akbari_Nature_selection_0.pdf" target="_blank" rel="noopener">
   
   <div class="ni-body">
@@ -1882,7 +1908,7 @@ Comments URL: https://news.ycombinator.com/item?id=4779…</p>
     <span class="ni-title">AI cybersecurity is not proof of work</span>
     <p class="ni-desc">Article URL: https://antirez.com/news/163
 Comments URL: https://news.ycombinator.com/item?id=47791236
-Points: 7
+Points: 18
 # Comments: 0</p>
   </div>
   <span class="news-arrow">→</span>
@@ -1894,8 +1920,8 @@ Points: 7
     <span class="ni-title">Codex Hacked a Samsung TV</span>
     <p class="ni-desc">Article URL: https://blog.calif.io/p/codex-hacked-a-samsung-tv
 Comments URL: https://news.ycombinator.com/item?id=47791212
-Points: 68
-# Comments: 46</p>
+Points: 74
+# Comments: 53</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -1927,7 +1953,7 @@ Points: 0
     <span class="ni-title">A Look into NaviDial, Japan's Legacy Phone Service</span>
     <p class="ni-desc">Article URL: https://www.tokyodev.com/articles/a-look-into-navidial-japan-s-legacy-phone-service
 Comments URL: https://news.ycombinator.com/item?id=47788633
-Points: 64
+Points: 65
 # Comments: …</p>
   </div>
   <span class="news-arrow">→</span>
@@ -1939,8 +1965,8 @@ Points: 64
     <span class="ni-title">Darkbloom – Private inference on idle Macs</span>
     <p class="ni-desc">Article URL: https://darkbloom.dev
 Comments URL: https://news.ycombinator.com/item?id=47788542
-Points: 305
-# Comments: 159</p>
+Points: 322
+# Comments: 162</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -1951,8 +1977,8 @@ Points: 305
     <span class="ni-title">RedSun: System user access on Win 11/10 and Server with the April 2026 Update</span>
     <p class="ni-desc">Article URL: https://github.com/Nightmare-Eclipse/RedSun
 Comments URL: https://news.ycombinator.com/item?id=47788473
-Points: 118
-# Comments: 24</p>
+Points: 122
+# Comments: 25</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -1963,8 +1989,8 @@ Points: 118
     <span class="ni-title">FSF trying to contact Google about spammer sending 10k+ mails from Gmail account</span>
     <p class="ni-desc">Article URL: https://daedal.io/@thomzane/116410863009847575
 Comments URL: https://news.ycombinator.com/item?id=47788424
-Points: 214
-# Comments: 121</p>
+Points: 223
+# Comments: 126</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -1975,8 +2001,8 @@ Points: 214
     <span class="ni-title">North American English Dialects</span>
     <p class="ni-desc">Article URL: https://aschmann.net/AmEng/
 Comments URL: https://news.ycombinator.com/item?id=47788398
-Points: 54
-# Comments: 23</p>
+Points: 55
+# Comments: 27</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -1999,8 +2025,8 @@ Points: 144
     <span class="ni-title">ChatGPT for Excel</span>
     <p class="ni-desc">Article URL: https://chatgpt.com/apps/spreadsheets/
 Comments URL: https://news.ycombinator.com/item?id=47785397
-Points: 243
-# Comments: 153</p>
+Points: 247
+# Comments: 154</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -2011,7 +2037,7 @@ Points: 243
     <span class="ni-title">Google broke its promise to me – now ICE has my data</span>
     <p class="ni-desc">Article URL: https://www.eff.org/deeplinks/2026/04/google-broke-its-promise-me-now-ice-has-my-data
 Comments URL: https://news.ycombinator.com/item?id=47782570
-Points: 1557
+Points: 1565
 # Commen…</p>
   </div>
   <span class="news-arrow">→</span>
@@ -2028,6 +2054,18 @@ Points: 0
   </div>
   <span class="news-arrow">→</span>
 </a>
+<a class="news-item" href="https://medicalxpress.com/news/2026-04-crispr-bold-silencing-syndrome-extra.html" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">15/04/2026 • 13:19</span>
+    <span class="ni-title">CRISPR takes important step toward silencing Down syndrome’s extra chromosome</span>
+    <p class="ni-desc">Article URL: https://medicalxpress.com/news/2026-04-crispr-bold-silencing-syndrome-extra.html
+Comments URL: https://news.ycombinator.com/item?id=47781286
+Points: 194
+# Comments: 11…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
 <a class="news-item" href="https://cal.com/blog/cal-com-goes-closed-source-why" target="_blank" rel="noopener">
   
   <div class="ni-body">
@@ -2035,20 +2073,8 @@ Points: 0
     <span class="ni-title">Cal.com is going closed source</span>
     <p class="ni-desc">Article URL: https://cal.com/blog/cal-com-goes-closed-source-why
 Comments URL: https://news.ycombinator.com/item?id=47780456
-Points: 335
-# Comments: 265</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://fingfx.thomsonreuters.com/gfx/legaldocs/xmvjyjekkpr/Rakoff%20-%20order%20-%20AI.pdf" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 10:47</span>
-    <span class="ni-title">US v. Heppner (S.D.N.Y. 2026) no attorney-client privilege for AI chats [pdf]</span>
-    <p class="ni-desc">Article URL: https://fingfx.thomsonreuters.com/gfx/legaldocs/xmvjyjekkpr/Rakoff%20-%20order%20-%20AI.pdf
-Comments URL: https://news.ycombinator.com/item?id=47778920
-Points: 155
-# C…</p>
+Points: 338
+# Comments: 269</p>
   </div>
   <span class="news-arrow">→</span>
 </a></div>
@@ -2056,9 +2082,18 @@ Points: 155
 <div class="source-block" id="tech-wired">
   <div class="source-header">
     <span class="source-name">Wired</span>
-    <span class="source-count">21 notícias</span>
+    <span class="source-count">22 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://www.wired.com/gallery/best-magsafe-grips/" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://www.wired.com/story/congress-turns-up-pressure-on-dhs-over-palantirs-role-in-immigration-crackdown/" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://media.wired.com/photos/69e018fc2d6efe939773065f/master/pass/Congress-Turns-Up-Pressure-on-DHS-Business-2255702346.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Congress Turns Up Pressure on DHS Over Palantir’s Role in Immigration Crackdown</span>
+    <p class="ni-desc">Democrats are demanding answers about Palantir and other surveillance firms powering Trump’s hardline immigration enforcement agenda.</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.wired.com/gallery/best-magsafe-grips/" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://media.wired.com/photos/68e03c9d1e02f28f7673efb6/master/pass/The%20Best%20MagSafe%20Phone%20Grips.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:30</span>
@@ -2265,7 +2300,70 @@ Points: 155
     <span class="source-name">Dev.to</span>
     <span class="source-count">12 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://dev.to/hklohani/why-i-built-a-sqlite-brain-for-ai-coding-and-how-it-saves-70-90-tokens-4na2" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://dev.to/brandon_woondc/how-dashboards-work-part-2-1adb" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:02</span>
+    <span class="ni-title">How dashboards work part 2</span>
+    <p class="ni-desc">Building a Dynamic Dashboard with Flask, Jinja2, HTML, CSS, and JavaScript
+
+
+Dashboards are one of the most common and valuable interfaces in modern web applications. They provide …</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://dev.to/nynrathod/i-got-tired-of-writing-the-same-200-lines-of-boilerplate-for-every-api-so-i-built-a-compiled-ie5" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">I got tired of writing the same 200 lines of boilerplate for every API, so I built a compiled language to eliminate it</span>
+    <p class="ni-desc">Every side project I start does the same thing to me. New idea. Open editor. Spend 2-3 days on things that had nothing to do with the idea itself. Setting up auth, writing CRUD han…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://dev.to/yolaine/too-many-ai-interviews-became-architecture-work-so-i-built-this-1fm7" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F7aydjxe4b9um9jolruqd.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Too many AI interviews became architecture work, so I built this</span>
+    <p class="ni-desc">&quot;Cool. I just did discovery, systems design, and tool selection for free.&quot;
+
+
+We'd spent most of the conversation talking through workflow bottlenecks, where an internal AI system w…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://dev.to/tlaloces/are-daily-standups-actually-useful-or-just-agile-rituals-4307" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">👉 Are Daily Standups Actually Useful—or Just Agile Rituals?</span>
+    <p class="ni-desc">🧠 Are daily standups really useful, or do we just do them out of inertia?
+
+
+After years working in agile environments, I’d like to open this debate: does it really make sense to ha…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://dev.to/adrianc/the-car-logo-problem-every-automotive-dev-team-has-and-how-to-fix-it-1nnk" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:54</span>
+    <span class="ni-title">The Car Logo Problem Every Automotive Dev Team Has (And How to Fix It)</span>
+    <p class="ni-desc">You know the folder. Every automotive project has one.
+
+
+
+/public/logos/
+  toyota.png
+  honda.png
+  ford.png
+  kia.png          ← this one's wrong
+  kia-new.png      ← is this the …</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://dev.to/hklohani/why-i-built-a-sqlite-brain-for-ai-coding-and-how-it-saves-70-90-tokens-4na2" target="_blank" rel="noopener">
   
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:51</span>
@@ -2335,59 +2433,6 @@ Every AI agent hits the same wall: email verification. 80% of online services re
     <span class="ni-time">16/04/2026 • 09:32</span>
     <span class="ni-title">Score de visibilite IA : comment il est calcule et optimise</span>
     <p class="ni-desc">Context : this post originates from Pulsari, a tool that audits how often a brand is cited by generative AIs (ChatGPT, Claude, Perplexity, Gemini). If you're building for AI search…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://dev.to/joey_lee_c96e4ad421791371/every-ai-startup-should-watch-out-1000-ghost-accounts-drained-our-platform-in-15-days-4k9h" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 09:29</span>
-    <span class="ni-title">Every AI Startup Should Watch Out: 1000+ Ghost Accounts Drained Our Platform in 15 Days</span>
-    <p class="ni-desc">We're building Nexu 🦞, an open-source OpenClaw desktop client on GitHub. When new users sign up, they get free credits to try various LLMs on the platform.
-
-One day, while cleaning…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://dev.to/danieldsouza21/build-your-own-bluetooth-controlled-car-with-arduino-a-complete-step-by-step-guide-3e8h" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 09:24</span>
-    <span class="ni-title">Build Your Own Bluetooth-Controlled Car with Arduino: A Complete Step-by-Step Guide</span>
-    <p class="ni-desc">Introduction
-
-
-The intersection of robotics and wireless communication is one of the most exciting areas for any aspiring embedded engineer or hobbyist. Whether you are looking to …</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://dev.to/amthus/thusdev-fetch-atteint-256-telechargements-npm-en-2-jours--261c" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 09:24</span>
-    <span class="ni-title">thusdev-fetch atteint 256 téléchargements npm en 2 jours !</span>
-    <p class="ni-desc">In just 2 days, thusdev-fetch has already reached 256 downloads on npm
-
-👉 What is it?
-An open-source HTTP client for Node.js/JavaScript designed to simplify network requests with b…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://dev.to/xiunotes/an-ai-ready-nestjs-nextjs-boilerplate-for-2026-h4d" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://media2.dev.to/dynamic/image/width=800%2Cheight=%2Cfit=scale-down%2Cgravity=auto%2Cformat=auto/https%3A%2F%2Fdev-to-uploads.s3.amazonaws.com%2Fuploads%2Farticles%2F754xw5zfpnalvytwwkio.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 09:24</span>
-    <span class="ni-title">An AI-Ready NestJS + Next.js Boilerplate for 2026</span>
-    <p class="ni-desc">I built a NestJS + Next.js monorepo I'd happily start any new SaaS on today. It's on GitHub. The README covers what's in it. This post is about three decisions that shaped how it's…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://dev.to/smallstack/api-key-authentication-in-smallstack-how-we-built-secure-external-access-5ga1" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 09:19</span>
-    <span class="ni-title">API Key Authentication in smallstack: How We Built Secure External Access</span>
-    <p class="ni-desc">One of the core promises of a platform like smallstack is that it plays well with the rest of your stack. That means: a clean REST API, webhook support for external automation — an…</p>
   </div>
   <span class="news-arrow">→</span>
 </a></div>
@@ -2607,7 +2652,25 @@ An open-source HTTP client for Node.js/JavaScript designed to simplify network r
     <span class="source-name">Al Jazeera</span>
     <span class="source-count">25 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://www.aljazeera.com/video/newsfeed/2026/4/16/israeli-strike-destroys-last-working-bridge-over-lebanons-litani-river?traffic_source=rss" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://www.aljazeera.com/news/2026/4/16/india-plans-more-seats-for-women-in-parliament-links-it-to-delimitation?traffic_source=rss" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:38</span>
+    <span class="ni-title">India plans more seats for women in parliament, links it to ‘delimitation’</span>
+    <p class="ni-desc">BJP links implementation of law reserving 33 percent of seats for women to redrawing of parliamentary constituencies.</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.aljazeera.com/opinions/2026/4/16/why-the-iran-war-did-not-go-according-to-us-plans?traffic_source=rss" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:29</span>
+    <span class="ni-title">Why the Iran war did not go according to US plans</span>
+    <p class="ni-desc">Washington misread Iran, overestimated its own leverage and found itself trapped in a costly 40-day war of attrition.</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.aljazeera.com/video/newsfeed/2026/4/16/israeli-strike-destroys-last-working-bridge-over-lebanons-litani-river?traffic_source=rss" target="_blank" rel="noopener">
   
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:21</span>
@@ -2813,24 +2876,6 @@ An open-source HTTP client for Node.js/JavaScript designed to simplify network r
     <p class="ni-desc">Stephen Curry&amp;#039;s Golden State Warriors keep their NBA playoff hopes alive, eliminating LA Clippers from the play-in.</p>
   </div>
   <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.aljazeera.com/video/newsfeed/2026/4/16/israels-military-kills-four-lebanese-paramedics-in-consecutive-strikes?traffic_source=rss" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 02:56</span>
-    <span class="ni-title">Israel’s military kills four Lebanese paramedics in consecutive strikes</span>
-    <p class="ni-desc">An Israeli triple-tap attack on rescue workers in southern Lebanon has killed four and left several others injured.</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.aljazeera.com/opinions/2026/4/16/the-pope-has-shown-the-world-how-to-stand-up-to-trump?traffic_source=rss" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 02:35</span>
-    <span class="ni-title">The pope has shown the world how to stand up to Trump</span>
-    <p class="ni-desc">Far too many world leaders have chosen to mollify the bullying US president. Pope Leo has shown there&amp;#039;s another way.</p>
-  </div>
-  <span class="news-arrow">→</span>
 </a></div>
 </div>
 <div class="source-block" id="mundo-the-guardian-world">
@@ -2838,21 +2883,30 @@ An open-source HTTP client for Node.js/JavaScript designed to simplify network r
     <span class="source-name">The Guardian World</span>
     <span class="source-count">34 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://www.theguardian.com/world/2026/apr/16/south-africa-julius-malema-jail-term-rifle" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://i.guim.co.uk/img/media/f961adc40a6129c57563b1e6f45cd3e14d3ab0d6/376_0_3238_2592/master/3238.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=98a272677f05c14f887149f8fdc22705" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="news-list"><a class="news-item" href="https://www.theguardian.com/uk-news/2026/apr/16/church-warden-peter-farquhar-lecturer-murder-conviction-quashed" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://i.guim.co.uk/img/media/1c55ae8e6468f330c66c67aa0c58594356655d98/276_0_1753_1403/master/1753.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=fc7a2a2bbb0404fac01b88f17a164add" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 09:37</span>
-    <span class="ni-title">South African politician Julius Malema given five-year jail term for gun offence</span>
-    <p class="ni-desc">Leader of leftwing Economic Freedom Fighters was convicted last year for firing rifle in the air at 2018 rallyThe South African leftwing politician Julius Malema has been sentenced…</p>
+    <span class="ni-time">16/04/2026 • 09:50</span>
+    <span class="ni-title">Church warden jailed for life for murder of lecturer has conviction quashed</span>
+    <p class="ni-desc">Retrial ordered in case of Benjamin Field, found guilty in 2019 of murdering Peter Farquhar, 69, in BuckinghamshireA church warden who was jailed for life for the murder of a unive…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
 <a class="news-item" href="https://www.theguardian.com/world/live/2026/apr/16/middle-east-crisis-live-iran-war-news-us-trump-ceasefire-deal-lebanon-israel-oil-sanctions-latest-updates" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://i.guim.co.uk/img/media/01f9499c817265fe9d4dfb7d1c97105a37398e2b/458_0_4583_3667/master/4583.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=cd2779948ed931490f36e89dbf74984b" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:46</span>
+    <span class="ni-title">Middle East crisis live: US to block Iranian ports for ‘as long as it takes’ and is ready to restart combat if talks fail, Hegseth warns</span>
+    <p class="ni-desc">Pentagon chief said that the US is ‘reloading with more power than before’ and Iran has choice of ‘the easy way or the hard way’US and Iran in indirect talks to extend two-week cea…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.theguardian.com/world/2026/apr/16/south-africa-julius-malema-jail-term-rifle" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://i.guim.co.uk/img/media/f961adc40a6129c57563b1e6f45cd3e14d3ab0d6/376_0_3238_2592/master/3238.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=98a272677f05c14f887149f8fdc22705" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:37</span>
-    <span class="ni-title">Middle East crisis live: US will blockade Hormuz ‘as long as it takes’ and is ready to restart combat if talks fail, Hegseth warns</span>
-    <p class="ni-desc">The US defence secretary said that the US is ‘reloading with more power than before’ and will maintain a navy blockade on the strait of HormuzUS and Iran in indirect talks to exten…</p>
+    <span class="ni-title">South African politician Julius Malema given five-year jail term for gun offence</span>
+    <p class="ni-desc">Leader of leftwing Economic Freedom Fighters was convicted last year for firing rifle in the air at 2018 rallyThe South African leftwing politician Julius Malema has been sentenced…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -2943,15 +2997,6 @@ An open-source HTTP client for Node.js/JavaScript designed to simplify network r
     <span class="ni-time">16/04/2026 • 07:53</span>
     <span class="ni-title">Starmer tells social media firms in No 10 meeting ‘things can’t go on like this’</span>
     <p class="ni-desc">PM summons senior figures from Meta, TikTok, Google and X and says social media is ‘putting our children at risk’Keir Starmer has told social media bosses “things can’t go on like …</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.theguardian.com/uk-news/2026/apr/16/church-warden-peter-farquhar-lecturer-murder-conviction-quashed" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://i.guim.co.uk/img/media/1c55ae8e6468f330c66c67aa0c58594356655d98/276_0_1753_1403/master/1753.jpg?width=140&amp;quality=85&amp;auto=format&amp;fit=max&amp;s=fc7a2a2bbb0404fac01b88f17a164add" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 07:50</span>
-    <span class="ni-title">Church warden jailed for life for murder of lecturer has conviction quashed</span>
-    <p class="ni-desc">Retrial ordered in case of Benjamin Field, found guilty in 2019 of murdering Peter Farquhar, 69, in BuckinghamshireA former church warden who was jailed for life for the murder of …</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -3162,138 +3207,138 @@ An open-source HTTP client for Node.js/JavaScript designed to simplify network r
     <span class="source-name">UOL Notícias</span>
     <span class="source-count">15 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://noticias.uol.com.br/colunas/josias-de-souza/2026/04/16/havia-muito-patrimonio-atras-do-matrimonio-do-master-com-brb.htm" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/noticias/42/2025/03/31/paulo-henrique-costa-presidente-do-banco-estatal-de-brasilia-brb-1743455617597_v2_142x100.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Havia muito patrimônio atrás do matrimônio do Master com BRB</span>
-    <p class="ni-desc">Paulo Henrique Costa assumiu a presidência do BRB, o banco público de Brasília, com uma fama de homem de bem.</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/afp/2026/04/16/kremlin-minimiza-impacto-do-retorno-das-sancoes-americanas-ao-petroleo.htm" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/04/16/ministerio-eleva-projecao-do-valor-bruto-da-producao-em-2026-para-r-1385-tri.htm" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Kremlin minimiza impacto do retorno das sanções americanas ao petróleo</span>
-    <p class="ni-desc">A Rússia minimizou, nesta quinta-feira (16), o impacto do retorno das sanções americanas sobre o seu petróleo, suspensas temporariamente por Washington para conter a alta dos preço…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Ministério eleva projeção do valor bruto da produção em 2026 para R$ 1,385 tri</span>
+    <p class="ni-desc">rasília, 16 - O Valor Bruto da Produção (VBP) agropecuária neste ano deve atingir R$ 1,385 trilhão, prevê o Ministério da Agricultura. O número é superior ao R$ 1,351 trilhão estim…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/redacao/2026/04/16/uol-vence-tres-categorias-do-digital-media-awards-2026.ghtm" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/noticias/79/2026/04/16/uol-vence-tres-categorias-do-digital-media-awards-2026-1776340264816_v2_142x100.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/redacao/2026/04/16/uol-lanca-newsletter-livros-mudam-vidas-com-escritores-renomados.ghtm" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/noticias/49/2026/04/15/newsletter-livros-mudam-vidas-contara-com-autores-renomados-1776261176215_v2_142x100.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">UOL vence três categorias do WAN-IFRA Digital Media Awards 2026</span>
-    <p class="ni-desc">O UOL foi premiado em três categorias do Digital Media Awards 2026, promovido anualmente pela WAN-IFRA (Associação Mundial de Jornais e Empresas de Mídia), organização que analisa …</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">UOL lança newsletter Livros Mudam Vidas, com textos de escritores famosos</span>
+    <p class="ni-desc">O UOL lança hoje a newsletter Livros Mudam Vidas, com textos dos escritores Arthur Nestrovski, Jeferson Tenório, Julián Fuks e Natalia Timerman sobre leituras, ideias e o universo …</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://www1.folha.uol.com.br/colunas/painelsa/2026/04/justica-bloqueia-bens-de-socios-da-fictor-em-acao-fora-da-recuperacao-judicial.shtml" target="_blank" rel="noopener">
+<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/agencia-estado/2026/04/16/quem-e-a-coronel-glauce-primeira-mulher-a-chefiar-a-pm-de-sp-em-200-anos.htm" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Justiça bloqueia bens de sócios da Fictor em ação fora da recuperação judicial</span>
-    <p class="ni-desc">A 23ª Vara Cível de Curitiba determinou nesta quarta-feira (15) o arresto cautelar dos ativos financeiros dos sócios da Fictor Invest Ltda. A decisão é liminar. A investidora Janin…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Quem é a coronel Glauce, primeira mulher a chefiar a PM de SP em 200 anos</span>
+    <p class="ni-desc">Glauce Anselmo Cavalli, coronel da Polícia Militar de São Paulo, foi nomeada pelo governador Tarcísio de Freitas (Repulicanos) para assumir o comando-geral da corporação. Pela prim…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/afp/2026/04/16/crise-editorial-na-franca-apos-boicote-de-autores-a-editora-ligada-a-magnata.htm" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/ilustrada/2026/04/steven-spielberg-diz-que-ha-mais-verdade-do-que-ficcao-em-seu-novo-filme.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Crise editorial na França após boicote de autores à editora ligada a magnata</span>
-    <p class="ni-desc">O setor editorial francês foi abalado nesta quinta-feira (16) pelo anúncio de 115 escritores de que não voltarão a publicar na tradicional editora Grasset, em protesto contra a saí…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Steven Spielberg diz que há 'mais verdade do que ficção' em seu novo filme</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://www1.folha.uol.com.br/mercado/2026/04/acompanhe-a-cotacao-do-dolar-nesta-quinta-feira-16.shtml" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/esporte/2026/04/liverpool-confirma-ruptura-do-tendao-de-aquiles-de-ekitike-que-esta-fora-da-copa-do-mundo.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Acompanhe a cotação do dólar nesta quinta-feira (16)</span>
-    <p class="ni-desc">O dólar abriu perto da estabilidade nesta quinta-feira (16), em um ambiente global de esperanças renovadas de que EUA e Irã possam chegar a um acordo de paz, enquanto no Brasil os …</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Liverpool confirma ruptura do tendão de Aquiles de Ekitiké, que está fora da Copa do Mundo</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://tnonline.uol.com.br/noticias/revista-uau/viuvo-de-isabel-veloso-revela-novo-relacionamento-e-rebate-criticas-veja-1082027" target="_blank" rel="noopener">
+<a class="news-item" href="https://noticias.uol.com.br/colunas/daniela-lima/2026/04/16/ex-chefe-do-brb-levava-a-mulher-para-analisar-imoveis-da-propina-do-master.htm" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/noticias/e8/2026/03/16/daniel-vorcaro-dono-do-banco-master-em-fotos-tiradas-na-prisao-em-sao-paulo-1773695658190_v2_142x100.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Ex-chefe do BRB levava a mulher para analisar imóveis da propina do Master</span>
+    <p class="ni-desc">Mensagens do banqueiro Daniel Vorcaro mostram que o ex-presidente do BRB Paulo Henrique Costa levava a própria mulher para analisar os imóveis que receberia como propina, segundo a…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://tnonline.uol.com.br/noticias/vale-do-ivai/homem-perde-r-700-apos-tentar-comprar-carro-pela-internet-em-jardim-alegre-1082037" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Viúvo de Isabel Veloso revela novo relacionamento e rebate críticas; veja</span>
-    <p class="ni-desc">ucas Borbas, viúvo de Isabel Veloso (2006-2026), usou as redes sociais para se manifestar a respeito de um assunto envolvendo sua vida pessoal. Na noite de quarta-feira (15) o rapa…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Homem perde R$ 700 após tentar comprar carro pela internet em Jardim Alegre</span>
+    <p class="ni-desc">m morador de Jardim Alegre procurou a Polícia Militar depois de cair em um golpe ao tentar comprar um carro anunciado nas redes sociais. O caso foi registrado na quarta-feira (15) …</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/reuters/2026/04/16/ex-presidente-pro-russo-da-bulgaria-lidera-corrida-eleitoral-com-discurso-anti-corrupcao.htm" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/cotidiano/2026/04/perfil-com-imagens-de-ia-se-passa-por-funcionaria-de-supermercado-para-venda-de-conteudo-sexual.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Ex-presidente pró-russo da Bulgária lidera corrida eleitoral com discurso anti-corrupção</span>
-    <p class="ni-desc">Por Edward McAllister e Alex Lefkowitz e Stoyan Nenov</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Perfil com imagens de IA se passa por funcionária de supermercado para venda de conteúdo sexual</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://tnonline.uol.com.br/noticias/arapongas/homem-e-preso-apos-descumprir-medida-protetiva-em-arapongas-1082029" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/ilustrada/2026/04/exposicao-de-nina-pandolfo-mergulha-o-visitante-em-sua-imaginacao-ludica.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Homem é preso após descumprir medida protetiva em Arapongas</span>
-    <p class="ni-desc">m homem foi preso na noite desta terça-feira (15) após descumprir uma medida protetiva de urgência e ir até a casa da vítima, no Parque Industrial, em Arapongas. A Guarda Municipal…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Exposição de Nina Pandolfo mergulha o visitante em sua imaginação lúdica</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://tnonline.uol.com.br/noticias/vale-do-ivai/maua-da-serra-anuncia-programacao-da-28-festa-do-milho-com-quatro-dias-de-shows-1082030" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/ilustrissima/2026/04/era-orban-na-hungria-foi-mais-reflexo-do-que-negacao-da-europa.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Mauá da Serra anuncia programação da 28ª Festa do Milho com quatro dias de shows</span>
-    <p class="ni-desc">Prefeitura de Mauá da Serra divulgou a programação oficial da 28ª Festa do Milho, que acontece entre os dias 7 e 10 de maio. O evento, um dos mais tradicionais da região, terá entr…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Era Orbán na Hungria foi mais reflexo do que negação da Europa</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/reuters/2026/04/16/forcas-dos-eua-estao-prontas-para-retomar-combate-se-ira-nao-chegar-a-acordo-diz-hegseth.htm" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/ciencia/2026/04/enorme-anel-de-banheira-pode-mostrar-contornos-de-antigo-oceano-em-marte.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Forças dos EUA estão prontas para retomar combate se Irã não chegar a acordo, diz Hegseth</span>
-    <p class="ni-desc">WASHINGTON, 16 Abr (Reuters) - As forças dos EUA no Oriente Médio ?estão preparadas para ?reiniciar as operações de combate se o Irã não concordar com um acordo ?de ?paz, ?disse o …</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Enorme 'anel de banheira' pode mostrar contornos de antigo oceano em Marte</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://www1.folha.uol.com.br/mercado/2026/04/advogado-de-ex-presidente-do-brb-afirma-que-prisao-foi-exagero-e-que-cliente-nao-cometeu-crime.shtml" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/blogs/virada-psicodelica/2026/04/conferencias-nos-eua-debatem-futuro-da-cultura-psicodelica.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Advogado de ex-presidente do BRB afirma que prisão foi exagero e que cliente não cometeu crime</span>
-    <p class="ni-desc">O advogado Cléber Lopes, que faz a defesa do ex-presidente do BRB (Banco de Brasília) Paulo Henrique Costa, disse que seu cliente não praticou crime algum e que a prisão realizada …</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Conferências nos EUA debatem futuro da cultura psicodélica</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://noticias.uol.com.br/ultimas-noticias/afp/2026/04/16/meghan-markle-afirma-ser-a-pessoa-mais-atacada-do-mundo-na-internet.htm" target="_blank" rel="noopener">
+<a class="news-item" href="https://www1.folha.uol.com.br/cotidiano/2026/04/chrys-dias-anunciava-rifa-de-apartamento-horas-antes-de-ser-preso-pela-pf.shtml" target="_blank" rel="noopener">
   
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Meghan Markle afirma ser a 'pessoa mais atacada' do mundo na internet</span>
-    <p class="ni-desc">Meghan Markle, esposa do príncipe Harry, afirmou nesta quinta-feira (16), terceiro dia da visita do casal à Austrália, que foi &quot;a pessoa mais atacada do mundo&quot; nas redes sociais.</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Chrys Dias anunciava rifa de apartamento horas antes de ser preso pela PF</span>
+    
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://noticias.uol.com.br/cotidiano/ultimas-noticias/2026/04/16/mc-ryan-e-chrys-dias-tem-instagram-derrubado-apos-prisao-por-bets-ilegais.ghtm" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/entretenimento/6a/2024/07/22/mc-ryan-sp-tem-visto-negado-para-os-eua-1721674734529_v2_142x100.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+<a class="news-item" href="https://noticias.uol.com.br/cotidiano/ultimas-noticias/2026/04/16/condenado-pela-morte-de-mae-bernadete-e-morto-pela-policia-na-ba.ghtm" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/noticias/8e/2026/04/16/a-esquerda-marilio-dos-santos-e-a-direita-mae-bernadete-1776342595245_v2_142x100.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">MC Ryan e Chrys Dias têm Instagram derrubado após prisão por bets ilegais</span>
-    <p class="ni-desc">O funkeiro MC Ryan e o influenciador Chrys Dias tiveram suas contas do Instagram retiradas do ar após serem presos ontem durante uma operação da Polícia Federal. A ação investiga u…</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">Condenado pela morte de Mãe Bernadete é morto pela polícia na BA</span>
+    <p class="ni-desc">Um dos condenados pela morte da líder quilombola Mãe Bernadete foi morto hoje após confronto com a Polícia Militar em Catu (BA).</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
-<a class="news-item" href="https://aovivo.folha.uol.com.br/mercado/2026/04/01/6443-dolar-empresas-e-bolsas-acompanhe-ao-vivo-o-mercado.shtml#post450529" target="_blank" rel="noopener">
-  
+<a class="news-item" href="https://noticias.uol.com.br/internacional/ultimas-noticias/2026/04/16/eua-ameacam-atacar-infraestrutura-de-energia-do-ira-se-acordo-nao-avancar.ghtm" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://conteudo.imguol.com.br/c/noticias/d2/2025/01/14/pete-hegseth-ministro-da-defesa-no-governo-trump-1736870359909_v2_142x100.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:54</span>
-    <span class="ni-title">Petróleo registra leve alta e fica em torno de US$ 96; Bolsas pelo mundo sobem</span>
-    <p class="ni-desc">O preço do petróleo está em leve alta nesta quinta-feira (16) com o barril Brent sendo negociado a US$ 95,88 (R$ 478,55) às 9h30 (horário de Brasília) para o contrato de junho.</p>
+    <span class="ni-time">16/04/2026 • 09:09</span>
+    <span class="ni-title">EUA ameaçam retomar combate se Irã não chegar a acordo com governo Trump</span>
+    <p class="ni-desc">O secretário de Defesa dos Estados Unidos, Pete Hegseth, afirmou que as Forças Armadas dos EUA estão prontas para retomar o combate se o Irã não aceitar um acordo de paz com o gove…</p>
   </div>
   <span class="news-arrow">→</span>
 </a></div>
@@ -3303,7 +3348,162 @@ An open-source HTTP client for Node.js/JavaScript designed to simplify network r
     <span class="source-name">G1</span>
     <span class="source-count">100 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://g1.globo.com/mundo/ao-vivo/eua-ataque-ira.ghtml" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://g1.globo.com/pb/paraiba/noticia/2026/04/16/consulado-da-franca-faz-contato-com-o-iml-de-joao-pessoa-para-encontrar-familiares-de-medica-francesa-morta.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/6QQ3Ek4gKt1GQSQ0sJj_k-OAUw4=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/D/p/cNRoEeRGOpy4tHrdkK3Q/francesa-morta.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:04</span>
+    <span class="ni-title">Consulado da França faz contato com o IML de João Pessoa para encontrar familiares de médica francesa morta</span>
+    <p class="ni-desc">Homem que matou mulher e colocou corpo dentro de mala é flagrado por câmeras, na PB
+O Consulado da França no Brasil acionou o Instituto Médico Legal (IML) de João Pessoas para cons…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/ma/maranhao/noticia/2026/04/16/suspeito-de-agredir-pessoas-de-forma-repentina-e-detido-em-sao-luis-vitimas-levaram-soco-e-mata-leao.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/zjhLD77GzA9ndkOWh83n3y3LGJk=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/K/v/aArCVlTA2WiNvmP7EkHw/montagens-1920-x-1080-px-2026-04-16t100104.499.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:01</span>
+    <span class="ni-title">Suspeito de agredir pessoas de forma repentina é detido em São Luís; vítimas levaram soco e 'mata-leão'</span>
+    <p class="ni-desc">Suspeito de agredir pessoas de forma repentina é detido em São Luís
+Vídeos que circularam nas redes sociais levaram à detenção de um homem suspeito de agredir pessoas no bairro Vin…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/rn/rio-grande-do-norte/noticia/2026/04/16/homem-que-matou-personal-trainer-dentro-de-academia-em-caico-e-condenado-a-21-anos-de-prisao.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/jcsvGe4caQI5AlFLFgIw4P4YP2E=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2024/O/h/2PvheQSxmIvwGVzU3vLw/whatsapp-image-2024-04-29-at-08.48.17.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:01</span>
+    <span class="ni-title">Homem que matou personal trainer dentro de academia em Caicó é condenado a 21 anos de prisão</span>
+    <p class="ni-desc">Whadson Whonan Silva de Araújo, de 34 anos, foi assassinado em Caicó
+Reprodução
+O homem acusado de matar a tiros o personal trainer Whadson Whonam Silva de Araújo, de 34 anos, dent…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/pe/petrolina-regiao/noticia/2026/04/16/ii-encontro-de-saude-fisica-e-mental-aplicada-ao-tea-esta-com-inscricoes-abertas-em-petrolina.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/OS27chtkq6CtiFhY40lMbCbDekE=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2024/B/Q/DnGAjXRJSDaz0YcrfQyg/autismo.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:01</span>
+    <span class="ni-title">II Encontro de Saúde Física e Mental aplicada ao TEA está com inscrições abertas em Petrolina</span>
+    <p class="ni-desc">Fita quebra-cabeça símbolo autismo
+Freepik
+O II Encontro de Saúde Física e Mental aplicada ao Transtorno do Espectro Autista (TEA) será realizado no dia 24 de abril no auditório da…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/am/amazonas/noticia/2026/04/16/aleam-aprova-projeto-que-obriga-agressor-a-pagar-despesas-de-vitima-de-violencia-domestica-no-am.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/8jFQifGScb967wv0tiveFPVP694=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2025/a/l/Q7OUPVQQSsM7eSD5mmJA/violenciadomesticaal.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:58</span>
+    <span class="ni-title">Aleam aprova projeto que obriga agressor a pagar despesas de vítima de violência doméstica no AM</span>
+    <p class="ni-desc">Violência contra mulher
+Arquivo Pessoal
+A Assembleia Legislativa do Amazonas (Aleam) aprovou, na terça-feira (14), um projeto de lei que obriga agressores a pagar despesas de vítim…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/rj/norte-fluminense/noticia/2026/04/16/furto-em-loja-no-centro-de-campos-dura-menos-de-dois-minutos-e-preocupa-comerciantes-video.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/zEOTxZ73Y9UQHHRVQ6kw-lyjqXo=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/n/5/Ot3nFhS2C1wBb8sp6NkA/arrombamento.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:56</span>
+    <span class="ni-title">Furto em loja no Centro de Campos dura menos de dois minutos e preocupa comerciantes; vídeo</span>
+    <p class="ni-desc">Câmeras flagram furto em loja de eletrônicos no Centro de Campos
+Um furto a uma loja de produtos eletrônicos no Centro de Campos dos Goytacazes, registrado na madrugada de terça-fe…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/to/tocantins/noticia/2026/04/16/crianca-morre-apos-acidente-com-quatro-carros-na-br-010.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/6OkFdrG64L2AOWU5YTlflK0m1Us=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2025/1/T/K4ar9KRVS0z2iyDYMEiA/converted-1-3-.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:55</span>
+    <span class="ni-title">Criança morre após acidente com quatro carros na BR-010</span>
+    <p class="ni-desc">Viatura do IML do Tocantins
+Divulgação/SSPTO
+Um menino de sete anos morreu após um acidente envolvendo quatro veículos na BR-010, entre Porto Nacional e Palmas. Ele foi identificad…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/mg/minas-gerais/noticia/2026/04/16/final-do-bbb26-tera-transmissao-gratuita-em-shopping-de-bh.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/atNbmQ1PBAjSrBGHoBzsMvcxu14=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/e/p/7q0ABNS2SQafTBcYswzA/top-5-bbb-26.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:53</span>
+    <span class="ni-title">Final do BBB26 terá transmissão gratuita em BH</span>
+    <p class="ni-desc">Top 5 do BBB 26: Ana Paula Renault, Jordana, Juliano Floss, Leandro &quot;Boneco&quot; e Milena.
+TV Globo
+A final do BBB26 será exibida ao vivo em Belo Horizonte, em um evento gratuito promo…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/ap/amapa/noticia/2026/04/16/homem-agride-mulher-e-mantem-vitima-refem-apos-chegada-da-policia-em-macapa.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/-_4gO8fl8ltQ33zF1Mz52PLbV_8=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/j/H/lzf1B2Rf63s89D65FI0g/whatsapp-image-2026-04-16-at-09.34.13.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:53</span>
+    <span class="ni-title">Homem agride mulher e mantém vítima refém após chegada da polícia em Macapá</span>
+    <p class="ni-desc">Ocorrência foi registrada no Macapaba
+Reprodução
+Um homem foi preso na manhã desta quinta-feira (16) depois de agredir uma mulher e mantê-la refém em uma panificadora do Conjunto H…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/mg/triangulo-mineiro/ao-vivo/assista-ao-vivo-a-tv-integracao-de-uberaba.ghtml" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:53</span>
+    <span class="ni-title">TV Integração de Uberaba ao vivo: assista aos telejornais</span>
+    <p class="ni-desc">TV Integração de Uberaba ao vivo: assista aos telejornais</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/mg/triangulo-mineiro/ao-vivo/assista-ao-vivo-a-tv-integracao-de-uberlandia.ghtml" target="_blank" rel="noopener">
+  
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:52</span>
+    <span class="ni-title">TV Integração de Uberlândia ao vivo: assista aos telejornais</span>
+    <p class="ni-desc">TV Integração de Uberlândia ao vivo: assista aos telejornais</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/sp/sao-paulo/noticia/2026/04/16/mc-ryan-sp-e-outros-famosos-presos-em-megaoperacao-da-pf-passam-por-audiencias-de-custodia.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/O5OyuQnTqhcY-Ge1psbh8hCavLY=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/X/L/yfNLGCQT6h1wyp9mBSlQ/fotojet-26-.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:50</span>
+    <span class="ni-title">MC Ryan SP e outros famosos presos em megaoperação da PF passam por audiências de custódia</span>
+    <p class="ni-desc">Presos em megaoperação da PF passam por audiência em SP
+O cantor e compositor MC Ryan SP e outros funkeiros, influenciadores digitais e empresários famosos presos na megaoperação d…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/rs/rio-grande-do-sul/noticia/2026/04/16/mulher-sobrevive-apos-ser-esfaqueada-quatro-vezes-pelo-companheiro-no-rs-policia-investiga-tentativa-de-feminicidio.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/zNou9vPowcozL6DZ0TRD30T4oB4=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/c/c/6uUshkSuu4ndVTFmh5tA/g1-1200-x-675-px-2026-04-16t091113.591.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:50</span>
+    <span class="ni-title">Mulher sobrevive após ser esfaqueada quatro vezes pelo companheiro no RS; polícia investiga tentativa de feminicídio</span>
+    <p class="ni-desc">O que é feminicídio?
+A Polícia Civil investiga uma tentativa de feminicídio ocorrida na madrugada de quarta-feira (15). Uma mulher foi esfaqueada pelo companheiro após uma discussã…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/sp/itapetininga-regiao/noticia/2026/04/16/engavetamento-deixa-feridos-em-rodovia-de-tatui-video.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/Wo9f3hHyGyIj-cEoshwRK3FpxfI=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/y/z/xFmrAPQeaAqpmhD8c4ag/sem-titulo.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:48</span>
+    <span class="ni-title">Engavetamento entre sete veículos deixa feridos em rodovia de Tatuí</span>
+    <p class="ni-desc">Acidente envolveu sete veículos e deixou três feridos
+Arquivo pessoal
+Um engavetamento envolvendo sete veículos deixou três pessoas feridas na Rodovia Antônio Romano Schincariol (S…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/pa/para/noticia/2026/04/16/vigilantes-sao-assaltados-e-tem-armas-roubadas-dentro-do-hemopa-em-belem.ghtml" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/9GZ0oUDQYEEczufVDematQfAXHE=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/K/n/STjaJgRWWVIb1OMA7ybg/whatsapp-image-2026-04-16-at-09.42.36.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:45</span>
+    <span class="ni-title">Vigilantes são assaltados e têm armas roubadas dentro do Hemopa, em Belém</span>
+    <p class="ni-desc">Assaltantes invadem centro do Hemopa e levam itens de vigilantes, em Belém
+Vigilantes foram assaltados dentro da sede da Fundação Centro de Hemoterapia e Hematologia do Pará (Hemop…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://g1.globo.com/mundo/ao-vivo/eua-ataque-ira.ghtml" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://s2-g1.glbimg.com/aJtZn2pUQadXwPQSmO1304oEHL0=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/P/R/kQROfBRcu2qzzMpVZ4mA/2026-04-16t113123z-1013369482-rc29qkafyqkb-rtrmadp-3-iran-crisis-lebanon-israel-strike.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:42</span>
@@ -3344,7 +3544,7 @@ A Polícia Civil prendeu, nesta terça-feira (15), um homem de 22 anos investiga
   <div class="ni-img"><img src="https://s2-g1.glbimg.com/GP3Sit9w74uTf8zCOwMK5ED-jpY=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/w/2/3IzBQ3SRAUCEf1S9fOlQ/download.webp" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:37</span>
-    <span class="ni-title">Europa tem combustível de aviação 'talvez para mais seis semanas', diz chefe da Agência Internacional de Energia</span>
+    <span class="ni-title">Europa tem combustível para abastecer aviões por ‘talvez mais seis semanas’, diz chefe da Agência Internacional de Energia</span>
     <p class="ni-desc">O diretor executivo da Agência Internacional de Energia (AIE), Fatih Birol, fala durante uma entrevista à Associated Press, na sede da AIE em Paris, na quinta-feira, 16 de abril de…</p>
   </div>
   <span class="news-arrow">→</span>
@@ -3424,7 +3624,7 @@ As patas dos pets vão muito além de servir como apoio para correr, br…</p>
   <span class="news-arrow">→</span>
 </a>
 <a class="news-item" href="https://g1.globo.com/ma/maranhao/vem-ver-pequeno/noticia/2026/04/16/conheca-o-artista-do-rabisco-professor-do-interior-do-ma-que-transforma-palavras-em-desenhos.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/nuJ_jEJHnDpQWlfti7X3Az0A0wE=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/m/C/xbGs6QRDCzA77DhFIpLQ/montagens-1920-x-1080-px-2026-04-16t080645.550.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/nVqXFpimi21NJV0DOkJOae-1d1g=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/R/k/9WyKspTTq7BBtkDRwlAA/montagens-1920-x-1080-px-2026-04-16t095308.513.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:28</span>
     <span class="ni-title">VÍDEO: Conheça o “Artista do Rabisco”, professor do interior do MA que transforma palavras em desenhos</span>
@@ -3465,10 +3665,10 @@ Uma pessoa morreu e outras ficaram feridas em um engaveta…</p>
   <span class="news-arrow">→</span>
 </a>
 <a class="news-item" href="https://g1.globo.com/mundo/noticia/2026/04/16/secretario-trump-eua-prontos-retomar-combate-ira-acordo.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/PAHIdBFTL6Q0fWuRiRva3yq-inQ=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/q/U/BZyAt3TzqoZE9zoNBn6w/navio.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/udusc0bUFVPVkY67BROasdJBM20=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/u/w/E4Oo03QxiNFHhBRzoF0Q/2026-04-16t122342z-2124333227-rc2cqkaydblu-rtrmadp-3-iran-crisis-usa.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:25</span>
-    <span class="ni-title">Secretário de Trump diz que EUA estão 'prontos para retomar o combate se Irã não aceitar acordo'</span>
+    <span class="ni-title">EUA estão 'prontos para retomar combates se Irã não aceitar acordo', diz Pentágono</span>
     <p class="ni-desc">Irã ameaça rotas de petróleo e nega avanço em acordo de paz com os EUA
 O secretário de Guerra dos Estados Unidos, Pete Hegseth, afirmou que as Forças Armadas americanas estão &quot;pron…</p>
   </div>
@@ -3500,8 +3700,8 @@ Uma auxiliar de limpeza deverá ser indenizada por danos morais na Serra Gaúcha
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:22</span>
     <span class="ni-title">'Não cometi nenhum ato ilegal', diz prefeito afastado de Cabedelo após operação que investiga elo com facção criminosa</span>
-    <p class="ni-desc">Conversa Política: prefeito eleito de Cabedelo (PB) é afastado após operação da PF
-O prefeito afastado de Cabedelo, Edvaldo Neto (Avante), falou pela primeira vez após sair do carg…</p>
+    <p class="ni-desc">Prefeito de Cabedelo se pronuncia após ser afastado em operação da PF
+O prefeito afastado de Cabedelo, Edvaldo Neto (Avante), falou pela primeira vez após sair do cargo, em um víde…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -3637,11 +3837,11 @@ Vocação, criatividade e a arte de transformar resíduos que antes seriam desca
   <span class="news-arrow">→</span>
 </a>
 <a class="news-item" href="https://g1.globo.com/politica/blog/andreia-sadi/post/2026/04/16/trocas-de-mensagens-entre-vorcaro-e-ex-brb.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/zJkGfucz5YBBcr33KVve4smLvvo=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/3/M/msHts0TwyLO5xU0WAitw/captura-de-tela-2026-04-16-091442.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-img"><img src="https://s2-g1.glbimg.com/yIYOfs1ipDA79c_vkadFYzfNsFs=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2025/s/D/wmyH8zSEA6qkUQrVn3Xg/vorcaro-phcosta.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:04</span>
     <span class="ni-title">'Fiz as contas pra chegar no valor que combinamos': mensagens entre Vorcaro e ex-BRB apontam ajuste milionário por imóveis</span>
-    <p class="ni-desc">Conversas interceptadas pela Polícia Federal revelam que imóveis milionários de luxo fariam parte de um suposto acerto de corrupção envolvendo o ex-presidente do BRB, Paulo Henriqu…</p>
+    <p class="ni-desc">A investigação da Polícia Federal (PF) que resultou na prisão do ex-presidente do BRB, Paulo Henrique  Costa, apontou  que &quot;há fortes indícios&quot; de que ele e o dono do Banco Master,…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -3763,7 +3963,7 @@ Um imóvel de três andares desabou em Olinda, no Grande Recife, na madrugada de
     <span class="ni-time">16/04/2026 • 08:48</span>
     <span class="ni-title">Médico residente que disparou arma em hospital do Paraná queria acertar ortopedista, diz polícia; paciente acabou ferida</span>
     <p class="ni-desc">Médico residente atira em paciente em hospital de Umuarama
-O médico residente Gabriel Damasceno Camargo, de 27 anos, estava sentado atrás de um ortopedista durante uma consulta e a…</p>
+O médico residente Gabriel Damasceno Camargo, de 27 anos, atirou contra um ortopedista durante uma consulta no Hospital C…</p>
   </div>
   <span class="news-arrow">→</span>
 </a>
@@ -4166,161 +4366,6 @@ Getty Images
 Você sabia que passar o tempo com outras pessoas pode ser tão fundamental…</p>
   </div>
   <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/sp/sao-paulo/noticia/2026/04/16/mulher-e-perseguida-e-atropelada-pelo-ex-namorado-na-zona-sul-de-sp-ela-tinha-medida-protetiva-contra-o-agressor.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/HkorMjmJZPgJu20roGZBKJHzGDY=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/N/w/DLBl34RVy9LMZaRtTBEw/fotojet-71-.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:13</span>
-    <span class="ni-title">Mulher é perseguida e atropelada pelo ex-namorado na Zona Sul de SP; ela tinha medida protetiva contra o agressor</span>
-    <p class="ni-desc">Mulher é atropelada pelo ex-namorado em tentativa de feminicídio na Zona Sul de SP
-Uma mulher foi perseguida e atropelada pelo ex-namorado em uma tentativa de feminicídio no bairro…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/politica/blog/andreia-sadi/post/2026/04/16/delacao-de-vorcaro-acordo-mira-devolucao-de-dinheiro-e-ato-de-oficio-de-autoridades.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/t8v6dB3jb9VfTiY1F88GDIUsWys=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/q/C/ZDFnXbSQGNB8ngsh2DOQ/globo-canal-4-20260319-2000-frame-98457.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:13</span>
-    <span class="ni-title">Delação de Vorcaro: acordo mira devolução de dinheiro e atuação de autoridades</span>
-    <p class="ni-desc">A espinha dorsal da negociação da delação de Daniel Vorcaro reside em critérios, como a devolução financeira e os atos de ofício de autoridades delatadas — que são as ações que uma…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/ce/ceara/noticia/2026/04/16/cnh-popular-detran-atende-em-10-cidades-do-ceara-no-fim-de-semana-veja-lista.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/RHWFcRkKjsbDg4mU8LVJbY379aA=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2025/9/6/b1nB5aRsKvQxNx2vQIXg/detran-ce-atende-candidatos-da-cnh-popular-em-10-cidades-neste-fim-de-semana.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:09</span>
-    <span class="ni-title">CNH Popular: Detran atende em 10 cidades do Ceará no fim de semana; veja lista</span>
-    <p class="ni-desc">CNH Popular: Detran realiza atendimento em 10 cidades do Ceará neste fim de semana
-O Departamento Estadual de Trânsito do Ceará (Detran-CE) vai realizar neste fim de semana atendim…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/04/16/motociclista-de-26-anos-morre-ao-colidir-com-onibus-na-av-andromeda-em-sao-jose-dos-campos.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/Jo5CT5mT0yNZikrXQKqgpVedUAk=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/A/r/reySFxT6mJdcAJ47sdlQ/1.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:08</span>
-    <span class="ni-title">Motociclista de 26 anos morre ao colidir com ônibus na Av. Andrômeda, em São José dos Campos</span>
-    <p class="ni-desc">Trecho de acidente que matou motociclista de 26 anos em São José dos Campos
-Reprodução/Google Street View
-Um motociclista de 26 anos morreu após colidir com um ônibus, na madrugada…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/pe/pernambuco/videos-bom-dia-pe/playlist/videos-bom-dia-pe-de-quinta-feira-16-de-abril-de-2026.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/JvqaraG7IuqTGZ13hdYEYSxSNg8=/s01.video.glbimg.com/deo/vi/36/98/14529836" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:07</span>
-    <span class="ni-title">VÍDEOS: Bom Dia PE de quinta-feira, 16 de abril de 2026</span>
-    <p class="ni-desc">Assista aos vídeos do telejornal com as notícias de Pernambuco.</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/ap/amapa/noticia/2026/04/16/amazonia-que-eu-quero-amplia-debate-sobre-democracia-digital-e-seguranca-eleitoral-em-macapa.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/oi6oVrpvaMJES_cZ5TfKmeI7J30=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2025/f/T/Fk2z8RQleAlry7BuKRAQ/img-8509.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:06</span>
-    <span class="ni-title">Amazônia Que Eu Quero amplia debate sobre democracia digital e segurança eleitoral em Macapá</span>
-    <p class="ni-desc">Painel do Amazônia Que Eu Quero 2025, em Macapá.
-Rafael Aleixo/Arquivo g1
-A Fundação Rede Amazônica (FRAM) realizará, no dia 29 de abril, em Macapá (AP), mais uma etapa do projeto …</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/rj/rio-de-janeiro/noticia/2026/04/16/caso-henry-borel-pgr-defende-no-stf-que-monique-medeiros-volte-a-prisao.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/YdqrUVJIiOzU-NKvoKc06Xw2N2s=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/g/a/GddAoNSD2a4Sb1DrgRfg/23juri2-copiar.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:05</span>
-    <span class="ni-title">Caso Henry Borel: PGR defende no STF que Monique Medeiros volte à prisão</span>
-    <p class="ni-desc">Caso Henry Borel: Entenda por que o julgamento foi adiado
-A Procuradoria-Geral da República (PGR) defendeu ao Supremo Tribunal Federal (STF) o restabelecimento da prisão preventiva…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/se/sergipe/noticia/2026/04/16/interdicao-no-viaduto-da-avenida-francisco-porto-altera-transito-em-aracaju-nesta-quinta-feira.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/7_8VEbGdtYT-ciAgRNmK3IrrUg8=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/z/s/fRK6slTAmJ5YBIRv3Acw/viaduto-francisco-porto-5-.jpeg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:04</span>
-    <span class="ni-title">Interdição no viaduto da Avenida Francisco Porto altera trânsito em Aracaju nesta quinta-feira</span>
-    <p class="ni-desc">Viaduto que liga as avenidas Francisco Porto e Gonçalo Rollemberg Leite em Aracaju; viaduto sobre a avenida Hermes Fontes
-Prefeitura de Aracaju
-O viaduto da Avenida Francisco Porto…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/ap/amapa/noticia/2026/04/16/bairros-da-zona-sul-de-macapa-ficam-sem-agua-nesta-quinta-16-confira-quais.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/HeU22y1-5-LhR0MFB1Tl320Au_w=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2023/X/a/XBQzT1TbauooSeXNBhtA/manutencoes-estao-sendo-realizadas-gradativamente-em-todos-os-sistemas-de-agua-da-csa..jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:03</span>
-    <span class="ni-title">Bairros da Zona Sul de Macapá ficam sem água nesta quinta (16); confira quais</span>
-    <p class="ni-desc">Serviços realizados pela CSA no Amapá
-CSA/divulgação
-A Concessionária de Saneamento do Amapá (CSA) informou que 19 bairros da Zona Sul de Macapá ficarão sem água nesta quinta-feira…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/loterias/loteca/noticia/2026/04/16/loteca-hoje-resultado-do-concurso-1243-e-numeros-sorteados.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/KamjCnYp56vQY-_h5gqZlXFQQ5M=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2025/J/o/ulGBSvTzq3mGozukh1oA/volantes-loteca.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:01</span>
-    <span class="ni-title">Loteca hoje: resultado do concurso 1243 e números sorteados</span>
-    <p class="ni-desc">Volantes da Loteca
-g1
-Veja abaixo os resultados dos jogos no concurso 1243 da Loteca realizado nesta quinta-feira (16):
-Resultado dos Jogos
-Veja quantas apostas foram premiadas no …</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/ac/acre/noticia/2026/04/16/vereador-e-condenado-a-mais-de-6-anos-de-prisao-por-bater-na-esposa-no-acre-video-mostra-agressao.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/W-BTHkxCiRZX95O6vS4JW0sS3bE=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/B/9/EiHBbSQq6CbMDBMlN12g/midia-de-distribuicao-g1.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:00</span>
-    <span class="ni-title">Vereador é condenado a mais de 6 anos de prisão por bater na esposa no Acre; VÍDEO mostra agressão</span>
-    <p class="ni-desc">Vereador é condenado a mais de seis anos de prisão por agredir a esposa no Acre
-O vereador Auciélio Lima da Silva (PP), de Porto Walter, interior do Acre, mais conhecido como Baixi…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/mg/zona-da-mata/ao-vivo/assista-ao-vivo-a-tv-integracao-de-juiz-de-fora.ghtml" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:00</span>
-    <span class="ni-title">TV Integração de Juiz de Fora ao vivo: assista aos telejornais</span>
-    <p class="ni-desc">TV Integração de Juiz de Fora ao vivo: assista aos telejornais</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/sp/vale-do-paraiba-regiao/noticia/2026/04/16/taubate-abre-74a-semana-monteiro-lobato-com-programacao-cultural-a-partir-desta-quinta-16-confira.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/_a_gAXbj5-Pmpb8LZwcjxSDlLY0=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2026/w/x/Ek5qrNTkeh03mQCjAHJg/personagens-sitio.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:00</span>
-    <span class="ni-title">Taubaté abre 74ª Semana Monteiro Lobato com programação cultural a partir desta quinta (16); confira</span>
-    <p class="ni-desc">Personagens do Sítio do Picapau Amarelo, em Taubaté.
-Reprodução/TV Vanguarda
-Taubaté abre, nesta quinta-feira (16), a 74ª edição da Semana Monteiro Lobato, com uma programação cult…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/politica/noticia/2026/04/16/caso-henry-borel-pgr-defende-que-soltura-de-monique-medeiros-foi-indevida-stf-analisa-o-caso.ghtml" target="_blank" rel="noopener">
-  
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 08:00</span>
-    <span class="ni-title">Caso Henry Borel: PGR defende que soltura de Monique Medeiros foi indevida; STF analisa o caso</span>
-    <p class="ni-desc">A Procuradoria-Geral da República (PGR) defendeu que a soltura de Monique Medeiros — ré no processo que apura a morte de seu filho, Henry Borel — foi indevida e violou decisões ant…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://g1.globo.com/pa/santarem-regiao/noticia/2026/04/16/tio-e-preso-suspeito-de-abusar-sexualmente-de-sobrinha-de-5-anos-em-santarem.ghtml" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://s2-g1.glbimg.com/8kcGyYrSyovyvTMpWAzUWUi6qVc=/i.s3.glbimg.com/v1/AUTH_59edd422c0c84a879bd37670ae4f538a/internal_photos/bs/2023/F/Q/lxe6g8Tniz94TsuYJBKA/fta20230412035.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">16/04/2026 • 07:56</span>
-    <span class="ni-title">Tio é preso suspeito de abusar sexualmente de sobrinha de 5 anos em Santarém</span>
-    <p class="ni-desc">Caso aconteceu na comunidade São Brás em Santarém
-Luis Lima Jr/FotoArena/Estadão Conteúdo
-Um homem foi preso em Santarém, no oeste do Pará, suspeito de abusar sexualmente da própri…</p>
-  </div>
-  <span class="news-arrow">→</span>
 </a></div>
 </div>
 <div class="source-block" id="brasil-ag-ncia-brasil">
@@ -4328,7 +4373,16 @@ Um homem foi preso em Santarém, no oeste do Pará, suspeito de abusar sexualmen
     <span class="source-name">Agência Brasil</span>
     <span class="source-count">10 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/ia-acelera-desinformacao-e-ameaca-democracias-alerta-pesquisa" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/policia-federal-prende-ex-presidente-do-brb" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://cdn.jsdelivr.net/gh/sergiosdlima/assets-ebc@1.0.0/abr/assets/images/logo-agenciabrasil.svg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 09:22</span>
+    <span class="ni-title">PF prende ex-presidente do BRB citado no caso do Banco Master</span>
+    <p class="ni-desc">A Polícia Federal (PF) confirmou a prisão do ex-presidente do Banco de Brasília (BRB) Paulo Henrique Costa nesta quinta-feira (16) durante a 4ª fase da Operação Compliance Zero. El…</p>
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://agenciabrasil.ebc.com.br/geral/noticia/2026-04/ia-acelera-desinformacao-e-ameaca-democracias-alerta-pesquisa" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://cdn.jsdelivr.net/gh/sergiosdlima/assets-ebc@1.0.0/abr/assets/images/logo-agenciabrasil.svg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 08:12</span>
@@ -4410,15 +4464,6 @@ O…</p>
     <p class="ni-desc">O ex-deputado federal Alexandre Ramagem foi solto nesta quarta-feira (15) após passar dois dias preso nos Estados Unidos, onde está foragido das autoridades brasileiras.
 
 Na segund…</p>
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://agenciabrasil.ebc.com.br/educacao/noticia/2026-04/cnpq-anuncia-edital-com-r-120-milhoes-para-bolsas-para-pesquisas" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://cdn.jsdelivr.net/gh/sergiosdlima/assets-ebc@1.0.0/abr/assets/images/logo-agenciabrasil.svg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 20:53</span>
-    <span class="ni-title">CNPq anuncia edital com R$ 120 milhões para bolsas de pesquisas</span>
-    <p class="ni-desc">O Conselho Nacional de Desenvolvimento Científico e Tecnológico (CNPq) anunciou que publicará ainda em abril a chamada pública do novo Programa de Capacitação Institucional (PCI), …</p>
   </div>
   <span class="news-arrow">→</span>
 </a></div>
@@ -4639,7 +4684,16 @@ O Açude Orós, segundo maior reservatório de água do Ceará, voltou a sangrar
     <span class="source-name">Omelete</span>
     <span class="source-count">84 notícias</span>
   </div>
-  <div class="news-list"><a class="news-item" href="https://www.omelete.com.br/filmes/maldicao-da-mumia-brendan-fraser-explicado" target="_blank" rel="noopener">
+  <div class="news-list"><a class="news-item" href="https://www.omelete.com.br/filmes/criticas/maldicao-da-mumia-vale-a-pena-ver" target="_blank" rel="noopener">
+  <div class="ni-img"><img src="https://cdn.ome.lt/H7I-aJJPdqPigX4fPwTxD9atXM0=/970x0/smart/filters:format(webp)/extras/conteudos/maldicao-da-mumia.webp" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
+  <div class="ni-body">
+    <span class="ni-time">16/04/2026 • 10:00</span>
+    <span class="ni-title">Maldição da Múmia é o filme de terror mais visceral e nojento do ano</span>
+    
+  </div>
+  <span class="news-arrow">→</span>
+</a>
+<a class="news-item" href="https://www.omelete.com.br/filmes/maldicao-da-mumia-brendan-fraser-explicado" target="_blank" rel="noopener">
   <div class="ni-img"><img src="https://cdn.ome.lt/TynRzdpJvLfgWuLeUJ7wYp5Mzxs=/970x0/smart/filters:format(webp)/extras/conteudos/image_2026-04-14_162909838.png" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
   <div class="ni-body">
     <span class="ni-time">16/04/2026 • 09:00</span>
@@ -5382,15 +5436,6 @@ O Açude Orós, segundo maior reservatório de água do Ceará, voltou a sangrar
   <div class="ni-body">
     <span class="ni-time">15/04/2026 • 10:32</span>
     <span class="ni-title">O Senhor dos Anéis | Conheça o novo ator de Aragorn nos cinemas</span>
-    
-  </div>
-  <span class="news-arrow">→</span>
-</a>
-<a class="news-item" href="https://www.omelete.com.br/filmes/street-fighter-teaser-anuncio-trailer" target="_blank" rel="noopener">
-  <div class="ni-img"><img src="https://cdn.ome.lt/Ifw66XTw5ux-YbQjwd72H4wytBc=/970x0/smart/filters:format(webp)/extras/conteudos/street-fighter-01-1_1.jpg" alt="" loading="lazy" onerror="this.closest('.ni-img').style.display='none'"></div>
-  <div class="ni-body">
-    <span class="ni-time">15/04/2026 • 10:07</span>
-    <span class="ni-title">Street Fighter | Filme live-action ganha teaser; trailer chega AMANHÃ (16)</span>
     
   </div>
   <span class="news-arrow">→</span>
