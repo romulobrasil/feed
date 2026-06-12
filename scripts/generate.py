@@ -8,6 +8,7 @@ import os
 import json
 import yaml
 import hashlib
+import html
 import feedparser
 import requests
 from datetime import datetime, timedelta, timezone
@@ -159,6 +160,98 @@ def format_change_pct(value):
     css = "up" if num > 0 else "down" if num < 0 else "flat"
     return (f"{sign}{format_decimal_br(num, 2)}%", css)
 
+def format_money(value, currency="USD", decimals=2):
+    try:
+        num = float(value)
+    except Exception:
+        return "N/D"
+    prefix_map = {
+        "USD": "US$ ",
+        "BRL": "R$ ",
+        "EUR": "EUR ",
+        "SAR": "SAR ",
+        "TWD": "TWD ",
+        "KRW": "KRW ",
+    }
+    prefix = prefix_map.get((currency or "").upper(), f"{currency} " if currency else "")
+    return f"{prefix}{format_decimal_br(num, decimals)}"
+
+def format_market_cap_label(raw_text):
+    text = (raw_text or "").strip()
+    if not text:
+        return "N/D"
+    text = re.sub(r"\s+", "", text.replace("$", "US$ "))
+    text = text.replace("T", " tri").replace("B", " bi").replace("M", " mi")
+    return text.strip()
+
+def normalize_ticker(symbol):
+    raw = (symbol or "").strip().upper()
+    fixes = {
+        "BRK.B": "BRK-B",
+        "BRK/B": "BRK-B",
+        "M.A": "MA",
+        "VISAS": "V",
+    }
+    return fixes.get(raw, raw)
+
+def guess_exchange_label(symbol, country=""):
+    symbol = normalize_ticker(symbol)
+    country = (country or "").strip().lower()
+    explicit = {
+        "NVDA": "NASDAQ",
+        "GOOG": "NASDAQ",
+        "GOOGL": "NASDAQ",
+        "AAPL": "NASDAQ",
+        "MSFT": "NASDAQ",
+        "AMZN": "NASDAQ",
+        "TSM": "NYSE",
+        "AVGO": "NASDAQ",
+        "TSLA": "NASDAQ",
+        "META": "NASDAQ",
+    }
+    if symbol in explicit:
+        return explicit[symbol]
+    if symbol.endswith(".SR"):
+        return "TADAWUL"
+    if symbol.endswith(".KS"):
+        return "KRX"
+    if symbol.endswith(".SS"):
+        return "SSE"
+    if symbol.endswith(".SW"):
+        return "SIX"
+    if symbol.endswith(".T"):
+        return "TSE"
+    if country == "usa":
+        return "NYSE/NASDAQ"
+    return "N/D"
+
+def fetch_wti_snapshot():
+    """Faz scraping leve do preço do WTI em página pública."""
+    url = "https://markets.businessinsider.com/commodities/oil-price?p=117&type=wti"
+    try:
+        resp = requests.get(url, headers=FEEDPARSER_HEADERS, timeout=20)
+        resp.raise_for_status()
+        text = resp.text
+        price_match = re.search(r'<span class="price-section__current-value">([\d.]+)</span>', text)
+        pct_match = re.search(r'<span class="price-section__relative-value">([+-]?[\d.]+%)</span>', text)
+        if not price_match:
+            return None
+        price = float(price_match.group(1))
+        pct_raw = pct_match.group(1) if pct_match else ""
+        pct_num = None
+        if pct_raw:
+            try:
+                pct_num = float(pct_raw.replace("%", ""))
+            except Exception:
+                pct_num = None
+        return {
+            "price": price,
+            "change_pct": pct_num,
+        }
+    except Exception as e:
+        print(f"  ⚠️  Petróleo indisponível: {e}")
+        return None
+
 def fetch_market_snapshot():
     """Busca cotações de mercado para mostrar no topo da home."""
     targets = [
@@ -207,22 +300,12 @@ def fetch_market_snapshot():
     except Exception as e:
         print(f"  ⚠️  Câmbio/BTC indisponível: {e}")
 
-    # Barril de petróleo (Stooq - CL.F)
-    try:
-        oil_resp = requests.get("https://stooq.com/q/l/?s=cl.f&i=d", headers=FEEDPARSER_HEADERS, timeout=15)
-        oil_resp.raise_for_status()
-        line = oil_resp.text.strip().splitlines()[0] if oil_resp.text.strip() else ""
-        cols = [c.strip() for c in line.split(",")]
-        if len(cols) >= 7 and cols[3] != "N/D" and cols[6] != "N/D":
-            open_price = float(cols[3])
-            close_price = float(cols[6])
-            pct_raw = ((close_price - open_price) / open_price) * 100 if open_price else 0.0
-            out["OIL-BRL"]["price"] = f"US$ {format_decimal_br(close_price, 2)}"
-            pct_txt, pct_css = format_change_pct(pct_raw)
-            out["OIL-BRL"]["change_pct"] = pct_txt
-            out["OIL-BRL"]["change_css"] = pct_css
-    except Exception as e:
-        print(f"  ⚠️  Petróleo indisponível: {e}")
+    oil_quote = fetch_wti_snapshot()
+    if oil_quote and oil_quote.get("price") is not None:
+        out["OIL-BRL"]["price"] = format_money(oil_quote["price"], "USD")
+        pct_txt, pct_css = format_change_pct(oil_quote.get("change_pct"))
+        out["OIL-BRL"]["change_pct"] = pct_txt
+        out["OIL-BRL"]["change_css"] = pct_css
 
     # HG Brasil Finance (fallback para USD e fonte do IBOV)
     try:
@@ -712,41 +795,118 @@ def build_news_item(art):
   <span class="news-arrow">→</span>
 </a>"""
 
-def build_home_category_summaries(categories_data):
-    home_cfg = get_home_builder_config()
-    if not home_cfg["enabled"]:
-        return '<div class="home-section"><div class="section-label">Resumo por categoria desativado</div></div>'
+def parse_companies_ranking_rows(html_text):
+    table_match = re.search(r"<tbody>(.*?)</tbody>", html_text or "", flags=re.S | re.I)
+    if not table_match:
+        return []
+    rows = re.findall(r"<tr>(.*?)</tr>", table_match.group(1), flags=re.S | re.I)
+    parsed = []
+    for row in rows:
+        if "colspan" in row.lower():
+            continue
+        cells = re.findall(r"<t[dh][^>]*>(.*?)</t[dh]>", row, flags=re.S | re.I)
+        cleaned = [
+            re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html.unescape(cell))).strip()
+            for cell in cells
+        ]
+        if len(cleaned) < 7 or not cleaned[0].isdigit():
+            continue
+        parsed.append({
+            "rank": int(cleaned[0]),
+            "company": cleaned[1],
+            "ticker": normalize_ticker(cleaned[2]),
+            "market_cap": cleaned[3],
+            "source_price": cleaned[4],
+            "change_30d": cleaned[5],
+            "country": cleaned[6],
+        })
+    return parsed
 
-    cat_by_id = {c["id"]: c for c in categories_data}
+def build_fallback_companies_ranking():
+    fallback = [
+        {"rank": 1, "company": "NVIDIA", "ticker": "NVDA", "market_cap": "US$ 5,514 tri", "price": "US$ 227,66", "country": "USA", "change_30d": "3.43%"},
+        {"rank": 2, "company": "Alphabet (Google)", "ticker": "GOOG", "market_cap": "US$ 4,753 tri", "price": "US$ 392,39", "country": "USA", "change_30d": "1.20%"},
+        {"rank": 3, "company": "Apple", "ticker": "AAPL", "market_cap": "US$ 4,379 tri", "price": "US$ 298,18", "country": "USA", "change_30d": "0.01%"},
+        {"rank": 4, "company": "Microsoft", "ticker": "MSFT", "market_cap": "US$ 3,079 tri", "price": "US$ 414,60", "country": "USA", "change_30d": "1.26%"},
+        {"rank": 5, "company": "Amazon", "ticker": "AMZN", "market_cap": "US$ 2,822 tri", "price": "US$ 262,36", "country": "USA", "change_30d": "1.82%"},
+        {"rank": 6, "company": "TSMC", "ticker": "TSM", "market_cap": "US$ 2,086 tri", "price": "US$ 402,26", "country": "Taiwan", "change_30d": "3.70%"},
+        {"rank": 7, "company": "Broadcom", "ticker": "AVGO", "market_cap": "US$ 2,020 tri", "price": "US$ 426,66", "country": "USA", "change_30d": "2.99%"},
+        {"rank": 8, "company": "Saudi Aramco", "ticker": "2222.SR", "market_cap": "US$ 1,785 tri", "price": "US$ 7,38", "country": "Saudi Arabia", "change_30d": "0.79%"},
+        {"rank": 9, "company": "Tesla", "ticker": "TSLA", "market_cap": "US$ 1,617 tri", "price": "US$ 430,63", "country": "USA", "change_30d": "2.86%"},
+        {"rank": 10, "company": "Meta Platforms", "ticker": "META", "market_cap": "US$ 1,554 tri", "price": "US$ 612,32", "country": "USA", "change_30d": "0.99%"},
+    ]
+    out = []
+    for item in fallback:
+        pct_txt, pct_css = format_change_pct(str(item["change_30d"]).replace("%", ""))
+        out.append({
+            "rank": item["rank"],
+            "company": item["company"],
+            "ticker": item["ticker"],
+            "market_cap": item["market_cap"],
+            "price": item["price"],
+            "exchange": guess_exchange_label(item["ticker"], item["country"]),
+            "change_pct": pct_txt,
+            "change_css": pct_css,
+        })
+    return out
+
+def fetch_top_companies_ranking():
+    url = "https://mumy.co.uk/top-50-largest-companies-in-the-world-by-market-cap-2026/amp/"
+    try:
+        resp = requests.get(url, headers=FEEDPARSER_HEADERS, timeout=20)
+        resp.raise_for_status()
+        rows = parse_companies_ranking_rows(resp.text)
+        top10 = [row for row in rows if 1 <= row["rank"] <= 10]
+        if not top10:
+            raise ValueError("ranking vazio")
+
+        enriched = []
+        for row in top10:
+            pct_txt, pct_css = format_change_pct(str(row["change_30d"]).replace("%", ""))
+            source_price_num = re.sub(r"[^\d.,-]", "", row["source_price"]).replace(",", "")
+            source_price = float(source_price_num) if source_price_num else None
+            price_label = format_money(source_price, "USD") if source_price is not None else "N/D"
+
+            enriched.append({
+                "rank": row["rank"],
+                "company": row["company"],
+                "ticker": row["ticker"],
+                "market_cap": format_market_cap_label(row["market_cap"]),
+                "price": price_label,
+                "exchange": guess_exchange_label(row["ticker"], row["country"]),
+                "change_pct": pct_txt,
+                "change_css": pct_css,
+            })
+        return enriched
+    except Exception as e:
+        print(f"  ⚠️  Ranking das empresas indisponível: {e}")
+        return build_fallback_companies_ranking()
+
+def build_top_companies_html():
+    companies = fetch_top_companies_ranking()
+    if not companies:
+        return '<div class="home-section"><div class="section-label">Top 10 global por valor de mercado</div><div class="summary-card">Sem dados disponíveis.</div></div>'
+
     cards = []
-    for cat_id in home_cfg["category_order"]:
-        cat = cat_by_id.get(cat_id)
-        if not cat:
-            continue
-        candidates = select_home_articles_for_category(cat, home_cfg)
-        summary_items = generate_category_summary_items(cat, candidates, home_cfg)
-        if not summary_items:
-            continue
-        list_items = "\n".join(
-            f"""<li class="summary-item">
-  <div class="summary-text">{esc(item['text'])}</div>
-  <a class="summary-source" href="{esc(item['url'])}" target="_blank" rel="noopener">Fonte: {esc(item['source'])}</a>
-</li>"""
-            for item in summary_items
-        )
-        cards.append(f"""<article class="summary-card">
+    for item in companies:
+        cards.append(f"""<article class="summary-card company-card">
   <div class="summary-head">
-    <h3 class="summary-title">{cat['emoji']} {esc(cat['label'])}</h3>
-    <span class="summary-count">{len(candidates)} notícia(s) analisada(s)</span>
+    <h3 class="summary-title">#{item['rank']} {esc(item['company'])}</h3>
+    <span class="summary-count">{esc(item['market_cap'])}</span>
   </div>
-  <ul class="summary-list">{list_items}</ul>
+  <ul class="summary-list">
+    <li class="summary-item">
+      <div class="company-line">
+        <span class="company-price">{esc(item['price'])}</span>
+        <span class="market-change {esc(item['change_css'])}">{esc(item['change_pct'])}</span>
+      </div>
+      <div class="company-meta">Ticker: {esc(item['ticker'])} · Bolsa: {esc(item['exchange'])}</div>
+    </li>
+  </ul>
 </article>""")
 
-    if not cards:
-        return '<div class="home-section"><div class="section-label">Sem resumos disponíveis</div></div>'
-
     return f"""<div class="home-section">
-  <div class="section-label">Resumo 24h por categoria</div>
+  <div class="section-label">Top 10 global por valor de mercado</div>
   <div class="summary-grid">
     {"".join(cards)}
   </div>
@@ -822,7 +982,7 @@ def build_html(categories_data, daily_summary):
     sidebar_nav      = build_sidebar_nav(categories_data)
     market_snapshot  = fetch_market_snapshot()
     market_html      = build_market_snapshot_html(market_snapshot)
-    home_category_summaries = build_home_category_summaries(categories_data)
+    home_category_summaries = build_top_companies_html()
     category_views   = "\n".join(build_category_view(cat) for cat in categories_data)
 
     return (template
